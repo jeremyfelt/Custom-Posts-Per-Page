@@ -1,0 +1,127 @@
+# Copyright (C) 2010 Custom Posts Per Page
+# This file is distributed under the same license as the Custom Posts Per Page package.
+msgid ""
+msgstr ""
+"Project-Id-Version: Custom Posts Per Page 1.2\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/custom-posts-per-page\n"
+"POT-Creation-Date: 2011-11-14 07:55:46+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2010-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+
+#: custom-posts-per-page.php:96
+msgid "Settings"
+msgstr ""
+
+#: custom-posts-per-page.php:105
+msgid "Posts Per Page"
+msgstr ""
+
+#. #-#-#-#-#  plugin.pot (Custom Posts Per Page 1.2)  #-#-#-#-#
+#. Plugin Name of the plugin/theme
+#: custom-posts-per-page.php:112
+msgid "Custom Posts Per Page"
+msgstr ""
+
+#: custom-posts-per-page.php:113
+msgid "Overview"
+msgstr ""
+
+#: custom-posts-per-page.php:114
+msgid ""
+"The settings below allow you to specify how many posts per\r\n"
+"\t\t\tpage are displayed to readers depending on the which type of page is "
+"being viewed. Different values can\r\n"
+"\t\t\tbe set for your front page, subsequent main pages (page 2, 3...), "
+"category pages, tag pages, author pages, archive pages, search pages\r\n"
+"\t\t\tand custom post type pages. In addition to these, a default value is "
+"available that can be set for any\r\n"
+"\t\t\tother pages not covered by this."
+msgstr ""
+
+#: custom-posts-per-page.php:119
+msgid ""
+"The initial value used on activation was pulled from the Blog Pages show at "
+"most setting under Reading."
+msgstr ""
+
+#: custom-posts-per-page.php:127
+msgid "Save Changes"
+msgstr ""
+
+#: custom-posts-per-page.php:140
+msgid "Front Page posts per page:"
+msgstr ""
+
+#: custom-posts-per-page.php:141
+msgid "Main posts per page:"
+msgstr ""
+
+#: custom-posts-per-page.php:142
+msgid "Category posts per page:"
+msgstr ""
+
+#: custom-posts-per-page.php:143
+msgid "Archive posts per page:"
+msgstr ""
+
+#: custom-posts-per-page.php:144
+msgid "Tag posts per page:"
+msgstr ""
+
+#: custom-posts-per-page.php:145
+msgid "Author posts per page:"
+msgstr ""
+
+#: custom-posts-per-page.php:146
+msgid "Search posts per page:"
+msgstr ""
+
+#: custom-posts-per-page.php:147
+msgid "Default posts per page:"
+msgstr ""
+
+#: custom-posts-per-page.php:173
+msgid "Main Settings"
+msgstr ""
+
+#: custom-posts-per-page.php:174
+msgid ""
+"This section allows you to modify page view types that are\r\n"
+"\t\tassociated with WordPress by default. When an option is set to 0, it "
+"will not modify any page requests for\r\n"
+"\t\tthat view and will instead allow default values to pass through."
+msgstr ""
+
+#: custom-posts-per-page.php:180
+msgid "Custom Post Type Specific Settings"
+msgstr ""
+
+#: custom-posts-per-page.php:181
+msgid ""
+"This section contains a list of all of your registered custom post\r\n"
+"\ttypes. In order to not conflict with other plugins or themes, these are "
+"set to 0 by default. When an option is\r\n"
+"\tset to 0, it will not modify any page requests for that custom post type "
+"archive. For Custom Posts Per Page to\r\n"
+"\tcontrol the number of posts to display, these will need to be changed."
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "http://www.jeremyfelt.com/wordpress/plugins/custom-posts-per-page/"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid "Shows a custom set number of posts depending on the page."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "Jeremy Felt"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "http://www.jeremyfelt.com"
+msgstr ""
