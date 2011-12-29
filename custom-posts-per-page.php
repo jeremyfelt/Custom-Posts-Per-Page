@@ -55,19 +55,19 @@ function cpppc_activate() {
         an options array. We'll pull the default value from the current Reading setting
         for 'posts_per_page' so that nothing changes unexpectedly. */
     $default_count = get_option( 'posts_per_page' );
-    $cur_options = get_option( 'cpppc_options' );
+    $current_options = get_option( 'cpppc_options' );
 
-    /*  When the plugin is activated (initially or on update), we'll check to see if settings
-        exist. If they do, we'll assign them. If they don't, we'll go with the default
-        posts_per_page setting instead. */
-    $cpppc_options[ 'front_page_count' ]= isset( $cur_options[ 'front_page_count' ] ) ? $cur_options[ 'front_page_count' ] : $default_count;
-    $cpppc_options[ 'index_count' ]     = isset( $cur_options[ 'index_count' ] ) ? $cur_options[ 'index_count' ] : $default_count;
-    $cpppc_options[ 'category_count' ]  = isset( $cur_options[ 'category_count' ] ) ? $cur_options[ 'category_count' ] : $default_count;
-    $cpppc_options[ 'tag_count' ]       = isset( $cur_options[ 'tag_count' ] ) ? $cur_options[ 'tag_count' ] : $default_count;
-    $cpppc_options[ 'author_count' ]    = isset( $cur_options[ 'author_count' ] ) ? $cur_options[ 'author_count' ] : $default_count;
-    $cpppc_options[ 'archive_count' ]   = isset( $cur_options[ 'archive_count' ] ) ? $cur_options[ 'archive_count' ] : $default_count;
-    $cpppc_options[ 'search_count' ]    = isset( $cur_options[ 'search_count' ] ) ? $cur_options[ 'search_count' ] : $default_count;
-    $cpppc_options[ 'default_count' ]   = isset( $cur_options[ 'default_count' ] ) ? $cur_options[ 'default_count' ] : $default_count;
+    $default_options = array(   'front_page_count' => $default_count,
+                                'index_count' => $default_count,
+                                'category_count' => $default_count,
+                                'tag_count' => $default_count,
+                                'author_count' => $default_count,
+                                'archive_count' => $default_count,
+                                'search_count' => $default_count,
+                                'default_count' => $default_count );
+
+    /*  Compare existing options with default options and assign accordingly. */
+    $cpppc_options = wp_parse_args( $current_options, $default_options );
 
     /*  We'll also get all of the currently registered custom post types and give them a default
         value of 0 if one has not previously been set. Custom post types are a special breed and
@@ -78,6 +78,7 @@ function cpppc_activate() {
         $cpppc_options[ $p . '_count' ] = isset( $cpppc_options[ $p . '_count' ] ) ? $cpppc_options[ $p . '_count' ] : 0;
     }
 
+    /*  Add or update the new options. */
     add_option( 'cpppc_options', $cpppc_options );
 }
 
