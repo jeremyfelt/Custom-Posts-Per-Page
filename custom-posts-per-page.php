@@ -83,7 +83,7 @@ function cpppc_activate() {
 }
 
 
-function cpppc_plugin_action_links( $links, $file ){
+function cpppc_plugin_action_links( $links, $file ) {
     /*  Function gratefully taken (and barely modified) from Pippin Williamson's
         WPMods article: http://www.wpmods.com/adding-plugin-action-links/ */
     static $this_plugin;
@@ -93,7 +93,7 @@ function cpppc_plugin_action_links( $links, $file ){
     }
 
     // check to make sure we are on the correct plugin
-    if ( $file == $this_plugin ){
+    if ( $file == $this_plugin ) {
         $settings_path = '/wp-admin/options-general.php?page=post-count-settings';
         $settings_link = '<a href="' . get_bloginfo( 'wpurl' ) . $settings_path . '">' . __( 'Settings', 'custom-posts-per-page' ) . '</a>';
         array_unshift( $links, $settings_link );  // add the link to the list
@@ -131,7 +131,6 @@ function cpppc_view_settings() {
 			</p>
 			</form>
 		</div>';
-	
 }
 
 function cpppc_register_settings() {
