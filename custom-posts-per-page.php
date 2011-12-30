@@ -335,7 +335,7 @@ function cpppc_modify_query( $request ) {
     }
 
     /*  Set our own page flag for our own sanity. */
-    $cpppc_paged = ( isset( $request[ 'paged' ] ) ) ? 1 : NULL;
+    $cpppc_paged = ( isset( $request[ 'paged' ] ) && 2 <= $request[ 'paged' ] ) ? 1 : NULL;
 
     $cpppc_query = new WP_Query();
     $cpppc_query->parse_query( $request );
