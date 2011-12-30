@@ -290,18 +290,19 @@ function cpppc_modify_query( $request ) {
 	foreach ( $all_post_types as $p=>$k ) {
 		$post_type_array[] = $p;
 	}
-	
+
+    /*  Set our own page flag for our own sanity. */
+    $cpppc_paged = ( 2 <= $request[ 'paged' ] ) ? 1 : NULL;
+
 	$cpppc_query = new WP_Query();
 	$cpppc_query->parse_query( $request );
 	
-	if( $cpppc_query->is_home() && ! $cpppc_query->is_paged() ){
-        if ( $cpppc_options[ 'front_page_count' ] && 0 != $cpppc_options[ 'front_page_count' ] ){
+	if( $cpppc_query->is_home() ){
+        if ( ! $cpppc_paged && isset( $cpppc_options[ 'front_page_count' ] ) && 0 != $cpppc_options[ 'front_page_count' ] ){
             $request[ 'posts_per_page' ] = $cpppc_options[ 'front_page_count' ];
+        }elseif ( $cpppc_paged && isset( $cpppc_options[ 'index_count' ] ) && 0 != $cpppc_options[ 'index_count' ] ){
+            $request[ 'posts_per_page' ] = $cpppc_options[ 'index_count' ];
         }
-    }elseif ( $cpppc_query->is_home() ) {
-		if ( 0 != $cpppc_options[ 'index_count' ] ){
-			$request[ 'posts_per_page' ] = $cpppc_options[ 'index_count' ];
-		}
 	}elseif( $cpppc_query->is_post_type_archive( $post_type_array ) ) {
 		/*	We've just established that the visitor is loading an archive
 			page of a custom post type by matching it to a general array.
@@ -319,40 +320,53 @@ function cpppc_modify_query( $request ) {
 			installed, it's possible it does not yet have an option. For now
 			we'll skip the request modification and let it slide by if there is
 			no match. */
-		if( 0 != $cpppc_options[ $my_post_type_option . '_count' ] && isset( $cpppc_options[ $my_post_type_option . '_count' ] ) ){
+		if( ! $cpppc_paged && 0 != $cpppc_options[ $my_post_type_option . '_count' ] && isset( $cpppc_options[ $my_post_type_option . '_count' ] ) ){
 			$request[ 'posts_per_page' ] = $cpppc_options[ $my_post_type_option . '_count' ];
-		}
+		}elseif ( $cpppc_paged && 0 != $cpppc_options[ $my_post_type_option . '_count_paged' ] && isset( $cpppc_options[ $my_post_type_option . '_count_paged' ] ) ){
+            $request[ 'posts_per_page' ] = $cpppc_options[ $my_post_type_option . '_count_paged' ];
+        }
 	}elseif ( $cpppc_query->is_category() ) {
-		if ( 0 != $cpppc_options[ 'category_count' ] ){
+		if ( ! $cpppc_paged && 0 != $cpppc_options[ 'category_count' ] ){
 			$request[ 'posts_per_page' ] = $cpppc_options[ 'category_count' ];
-		}
+		}elseif ( $cpppc_paged && 0 != $cpppc_options[ 'category_count_paged' ] ){
+            $request[ 'posts_per_page' ] = $cpppc_options[ 'category_count_paged' ];
+        }
 	}elseif ( $cpppc_query->is_tag() ) {
-		if ( 0 != $cpppc_options[ 'tag_count' ] ){
+		if ( ! $cpppc_paged && 0 != $cpppc_options[ 'tag_count' ] ){
 			$request[ 'posts_per_page' ] = $cpppc_options[ 'tag_count' ];
-		}
+		}elseif ( $cpppc_paged && 0 != $cpppc_options[ 'tag_count_paged' ] ){
+            $request[ 'posts_per_page' ] = $cpppc_options[ 'tag_count_paged' ];
+        }
 	}elseif ( $cpppc_query->is_author() ) {
-		if ( 0 != $cpppc_options[ 'author_count' ] ) {
+		if ( ! $cpppc_paged && 0 != $cpppc_options[ 'author_count' ] ) {
 			$request[ 'posts_per_page' ] = $cpppc_options[ 'author_count' ];
-		}
+		}elseif ( $cpppc_paged && 0 != $cpppc_options[ 'author_count_paged' ] ){
+            $request[ 'posts_per_page' ] = $cpppc_options[ 'author_count_paged' ];
+        }
 	}elseif ( $cpppc_query->is_search() ) {
-		if ( 0 != $cpppc_options[ 'search_count' ] ) {
+		if ( ! $cpppc_paged && 0 != $cpppc_options[ 'search_count' ] ) {
 			$request[ 'posts_per_page' ] = $cpppc_options[ 'search_count' ];
-		}
+		}elseif ( $cpppc_paged && 0 != $cpppc_options[ 'search_count_paged' ] ){
+            $request[ 'posts_per_page' ] = $cpppc_options[ 'search_count_paged' ];
+        }
 	}elseif ( $cpppc_query->is_archive() ) {
 		/*	Note that the check for is_archive needs to be below anything else
 			that WordPress may consider an archive. This includes is_tag, is_category, is_author
 			and probably some others.
 		*/
-		if ( 0 != $cpppc_options[ 'archive_count' ] ) {
+		if ( ! $cpppc_paged && 0 != $cpppc_options[ 'archive_count' ] ) {
 			$request[ 'posts_per_page' ] = $cpppc_options[ 'archive_count' ];
-		}
+		}elseif ( $cpppc_paged && 0 != $cpppc_options[ 'archive_count_paged' ] ){
+            $request[ 'posts_per_page' ] = $cpppc_options[ 'archive_count_paged' ];
+        }
 	}else{
-		if ( 0 != $cpppc_options[ 'default_count' ] ) {
+		if ( ! ?$cpppc_paged && 0 != $cpppc_options[ 'default_count' ] ) {
 			$request[ 'posts_per_page' ] = $cpppc_options[ 'default_count' ];
-		}
+		}elseif ( $cpppc_paged && 0 != $cpppc_options[ 'default_count_paged' ] ){
+            $request[ 'posts_per_page' ] = $cpppc_options[ 'default_count_paged ' ];
+        }
 	}
 
 	return $request;
 }
-	
 ?>
