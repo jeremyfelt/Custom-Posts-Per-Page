@@ -60,11 +60,17 @@ function cpppc_activate() {
     $default_options = array(   'front_page_count' => $default_count,
                                 'index_count' => $default_count,
                                 'category_count' => $default_count,
+                                'category_count_paged' => $default_count,
                                 'tag_count' => $default_count,
+                                'tag_count_paged' => $default_count,
                                 'author_count' => $default_count,
+                                'author_count_paged' => $default_count,
                                 'archive_count' => $default_count,
+                                'archive_count_paged' => $default_count,
                                 'search_count' => $default_count,
-                                'default_count' => $default_count );
+                                'search_count_paged' => $default_count,
+                                'default_count' => $default_count,
+                                'default_count_paged' => $default_count );
 
     /*  Compare existing options with default options and assign accordingly. */
     $cpppc_options = wp_parse_args( $current_options, $default_options );
@@ -76,6 +82,7 @@ function cpppc_activate() {
     $all_post_types = get_post_types( array( '_builtin' => false ) );
     foreach ( $all_post_types as $p=>$k ){
         $cpppc_options[ $p . '_count' ] = isset( $cpppc_options[ $p . '_count' ] ) ? $cpppc_options[ $p . '_count' ] : 0;
+        $cpppc_options[ $p . '_count_paged' ] = isset( $cpppc_options[ $p . '_count_paged' ] ) ? $cpppc_options[ $p . '_count_paged' ] : 0;
     }
 
     /*  Add or update the new options. */
