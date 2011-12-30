@@ -2,10 +2,10 @@
 
 Contributors: jeremyfelt
 Donate link: http://www.jeremyfelt.com/wordpress/plugins/custom-posts-per-page/
-Tags: admin, administration, settings, archives, posts, count, number, custom-post-type
+Tags: admin, administration, settings, archives, posts-per-page, paged, posts, count, number, custom-post-type
 Requires at least: 3.1
 Tested up to: 3.3
-Stable tag: 1.2.2
+Stable tag: 1.3
 
 Custom Posts Per Page provides a settings page in your WordPress admin that allows you to specify how many posts are displayed for different views.
 
@@ -17,7 +17,6 @@ Settings are available for:
 
 * Home (Index) Page
     * As long as view is set to blog posts, not static page.
-    * Separate values are available for the first page and subsequent pages.
 * Category Pages
 * Tag Pages
 * Author Pages
@@ -25,9 +24,11 @@ Settings are available for:
 * Search Pages
 * Default Page (*Any page not covered above.*)
 * Custom Post Type archive pages
-    * Any Custom Post Types are detected automatically.
+    * All Custom Post Types are detected automatically.
 
-This makes it easier to manage exactly how your posts are displayed to your readers, especially when different views have different layouts, rather than relying on the single setting in the Reading menu or having to hard code options in your custom theme.
+Each of the above settings can have a different value for the first page displayed **and** subsequent paged views.
+
+Custom Posts Per Page makes it easy to manage exactly how your content is displayed to your readers, especially when different views have different layouts, rather than relying on the single setting in the Reading menu or having to hard code options in your custom theme.
 
 == Installation ==
 
@@ -48,6 +49,11 @@ That's it! The current setting for *Blog pages show at most* under *Reading* wil
 1. An overview of the Custom Posts Per Page settings screen.
 
 == Changelog ==
+= 1.3 =
+* **New** - Added options to control first page vs subsequent pages for all views.
+* Cleaned up handling of option initialization upon activation.
+* Cleaned up handling of option validation
+
 = 1.2.2 =
 * Undefined index headers may have been output on some servers, causing a small error in WordPress upon activation. Resolved.
 
@@ -79,6 +85,10 @@ That's it! The current setting for *Blog pages show at most* under *Reading* wil
 * In which a plugin begins its life.
 
 == Upgrade Notice ==
+= 1.3 =
+
+* Adds awesome support for paged views.
+
 = 1.2.2 =
 
 * Cleans up possible small error upon activation.
