@@ -79,18 +79,18 @@ function cpppc_activate() {
     $default_options[ 'search_count_paged' ] = isset( $current_options[ 'search_count' ] ) ? $current_options[ 'search_count' ] : $default_count;
     $default_options[ 'default_count_paged' ] = isset( $current_options[ 'default_count' ] ) ? $current_options[ 'default_count' ] : $default_count;
 
-    /*  Compare existing options with default options and assign accordingly. */
-    $cpppc_options = wp_parse_args( $current_options, $default_options );
-
     /*  We'll also get all of the currently registered custom post types and give them a default
         value of 0 if one has not previously been set. Custom post types are a special breed and
         we don't necessarily want them to match the default posts_per_page value without a
         conscious decision by the user. */
     $all_post_types = get_post_types( array( '_builtin' => false ) );
     foreach ( $all_post_types as $p=>$k ){
-        $cpppc_options[ $p . '_count' ] = isset( $cpppc_options[ $p . '_count' ] ) ? $cpppc_options[ $p . '_count' ] : 0;
-        $cpppc_options[ $p . '_count_paged' ] = isset( $cpppc_options[ $p . '_count_paged' ] ) ? $cpppc_options[ $p . '_count_paged' ] : 0;
+        $default_options[ $p . '_count' ] = isset( $current_options[ $p . '_count' ] ) ? $current_options[ $p . '_count' ] : 0;
+        $default_options[ $p . '_count_paged' ] = isset( $current_options[ $p . '_count_paged' ] ) ? $current_options[ $p . '_count_paged' ] : 0;
     }
+
+    /*  Compare existing options with default options and assign accordingly. */
+    $cpppc_options = wp_parse_args( $current_options, $default_options );
 
     /*  Update the new options. */
     update_option( 'cpppc_options', $cpppc_options );
