@@ -3,7 +3,7 @@
 Plugin Name: Custom Posts Per Page
 Plugin URI: http://www.jeremyfelt.com/wordpress/plugins/custom-posts-per-page/
 Description: Shows a custom set number of posts depending on the type of page being viewed.
-Version: 1.3
+Version: 1.3.1
 Author: Jeremy Felt
 Author URI: http://www.jeremyfelt.com
 Text Domain: custom-posts-per-page
@@ -32,9 +32,11 @@ register_activation_hook( __FILE__, 'cpppc_activate' );
 if ( is_admin() ){
     /*	If we're on the admin screen, we'll want to make sure that
         the appropriate settings are showing up. */
+    add_action( 'admin_init', 'cpppc_check_and_upgrade' );
     add_action( 'admin_menu', 'cpppc_add_settings' );
     add_action( 'admin_init', 'cpppc_register_settings' );
     add_action( 'admin_init', 'cpppc_add_languages' );
+
     /*  Provide a good looking 'settings' link when the plugin is activated. */
     add_filter( 'plugin_action_links', 'cpppc_plugin_action_links', 10, 2 );
 }else {
@@ -49,6 +51,13 @@ if ( is_admin() ){
 function cpppc_add_languages(){
     $plugin_dir = basename( dirname( __FILE__ ) ) . '/lang';
     load_plugin_textdomain( 'custom-posts-per-page', false, $plugin_dir );
+}
+
+function cpppc_check_and_upgrade(){
+    if ( ! get_option( 'cpppc_upgrade' ) ){
+        cpppc_activate();
+        update_option( 'cpppc_upgrade', '1.3' );
+    }
 }
 
 function cpppc_activate() {
