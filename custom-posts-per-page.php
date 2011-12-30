@@ -2,8 +2,8 @@
 /*
 Plugin Name: Custom Posts Per Page
 Plugin URI: http://www.jeremyfelt.com/wordpress/plugins/custom-posts-per-page/
-Description: Shows a custom set number of posts depending on the page.
-Version: 1.2.2
+Description: Shows a custom set number of posts depending on the type of page being viewed.
+Version: 1.3
 Author: Jeremy Felt
 Author URI: http://www.jeremyfelt.com
 Text Domain: custom-posts-per-page
@@ -31,17 +31,18 @@ register_activation_hook( __FILE__, 'cpppc_activate' );
 
 if ( is_admin() ){
     /*	If we're on the admin screen, we'll want to make sure that
-         the appropriate settings are showing up. If we add the modified
-         query here, the posts view in the admin screen changes as well. */
+        the appropriate settings are showing up. */
     add_action( 'admin_menu', 'cpppc_add_settings' );
     add_action( 'admin_init', 'cpppc_register_settings' );
     add_action( 'admin_init', 'cpppc_add_languages' );
-    /*  Also want to provide a good looking 'settings' link when the plugin
-        is activated. */
+    /*  Provide a good looking 'settings' link when the plugin is activated. */
     add_filter( 'plugin_action_links', 'cpppc_plugin_action_links', 10, 2 );
 }else {
-    /*	If we're on any page other than the admin screen, we'll add our
-         request modification. */
+    /* If we're on any page other than the admin screen, we'll add our
+     * request modification. If this filter is used on the admin screen,
+     * the number of posts shown is changed there as well. Not ideal unless
+     * we're planning on it. :)
+     */
     add_filter( 'request', 'cpppc_modify_query' );
 }
 
@@ -57,7 +58,8 @@ function cpppc_activate() {
     $default_count = get_option( 'posts_per_page' );
     $current_options = get_option( 'cpppc_options' );
 
-    $default_options = array(   'front_page_count' => $default_count,
+    $default_options = array(
+        'front_page_count' => $default_count,
         'index_count' => $default_count,
         'category_count' => $default_count,
         'category_count_paged' => $default_count,
@@ -70,7 +72,8 @@ function cpppc_activate() {
         'search_count' => $default_count,
         'search_count_paged' => $default_count,
         'default_count' => $default_count,
-        'default_count_paged' => $default_count );
+        'default_count_paged' => $default_count
+    );
 
     /*  Compare existing options with default options and assign accordingly. */
     $cpppc_options = wp_parse_args( $current_options, $default_options );
@@ -85,7 +88,7 @@ function cpppc_activate() {
         $cpppc_options[ $p . '_count_paged' ] = isset( $cpppc_options[ $p . '_count_paged' ] ) ? $cpppc_options[ $p . '_count_paged' ] : 0;
     }
 
-    /*  Add or update the new options. */
+    /*  Update the new options. */
     update_option( 'cpppc_options', $cpppc_options );
 }
 
@@ -95,11 +98,10 @@ function cpppc_plugin_action_links( $links, $file ) {
         WPMods article: http://www.wpmods.com/adding-plugin-action-links/ */
     static $this_plugin;
 
-    if ( ! $this_plugin ) {
+    if ( ! $this_plugin )
         $this_plugin = plugin_basename( __FILE__ );
-    }
 
-    // check to make sure we are on the correct plugin
+    /*  Make sure we are on the correct plugin */
     if ( $file == $this_plugin ) {
         $settings_path = '/wp-admin/options-general.php?page=post-count-settings';
         $settings_link = '<a href="' . get_bloginfo( 'wpurl' ) . $settings_path . '">' . __( 'Settings', 'custom-posts-per-page' ) . '</a>';
@@ -121,11 +123,16 @@ function cpppc_view_settings() {
 			<h2>' . __( 'Custom Posts Per Page', 'custom-posts-per-page' ) . '</h2>
 			<h3>' . __( 'Overview', 'custom-posts-per-page' ) . ':</h3>
 			<p style="margin-left:12px;max-width:640px;">' . __( 'The settings below allow you to specify how many posts per
-			page are displayed to readers depending on the which type of page is being viewed. Different values can
-			be set for your front page, subsequent main pages (page 2, 3...), category pages, tag pages, author pages, archive pages, search pages
-			and custom post type pages. In addition to these, a default value is available that can be set for any
+			page are displayed to readers depending on the which type of page is being viewed.</p>
+			<p style="margin-left:12px;max-width:640px;">Different values can
+			be set for your your main view, category views, tag views, author views, archive views, search views, and views
+			for custom post types. For each of these views, a different setting is available for the first page and subsequent pages.
+			In addition to these, a default value is available that can be set for any
 			other pages not covered by this.', 'custom-posts-per-page' ) . '</p>';
-    echo '<p style="margin-left:12px;max-width:640px;">' . __( 'The initial value used on activation was pulled from the Blog Pages show at most setting under Reading.', 'custom-posts-per-page' ) . '</p>';
+    echo '<p style="margin-left:12px;max-width:640px;">' . __( 'The initial value used on activation was pulled from the setting', 'custom-posts-per-page' );
+    echo ' <em>' . __( 'Blog Pages show at most', 'custom-posts-per-page' ) . '</em> ';
+    echo __( 'found in the', 'custom-posts-per-page' ) . ' <a href="' . get_bloginfo( 'wpurl' ) . 'wp-admin/options-reading.php' . '" title="Reading Settings">';
+    echo __( 'Reading', 'custom-posts-per-page' ) . '</a> ' . __( 'options', 'custom-posts-per-page' ) . '.</p>';
     echo '<form method="post" action="options.php">';
 
     settings_fields( 'cpppc_options' );
@@ -392,4 +399,3 @@ function cpppc_modify_query( $request ) {
 
     return $request;
 }
-?>
