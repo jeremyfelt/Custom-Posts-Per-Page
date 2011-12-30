@@ -27,6 +27,9 @@ License: GPL2
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+global $page_count_offset;
+$page_count_offset = 0;
+
 register_activation_hook( __FILE__, 'cpppc_activate' );
 
 if ( is_admin() ){
@@ -46,6 +49,7 @@ if ( is_admin() ){
      * we're planning on it. :)
      */
     add_action( 'pre_get_posts', 'jf_cpppc_modify_query' );
+
 }
 
 function cpppc_add_languages(){
@@ -324,7 +328,14 @@ function cpppc_default_count_text() {
     echo '" />';
 }
 
+function jf_cpppc_correct_found_posts ( $found_posts ) {
+    global $page_count_offset;
+    return ( $found_posts + $page_count_offset );
+}
+
 function jf_cpppc_modify_query( $query ) {
+    global $page_count_offset;
+
     /*	This is the important part of the plugin that actually modifies the query
          at the beginning of the page before anything is displayed. */
     $cpppc_options = get_option( 'cpppc_options' );
@@ -342,9 +353,10 @@ function jf_cpppc_modify_query( $query ) {
         if ( ! $cpppc_paged && isset( $cpppc_options[ 'front_page_count' ] ) && 0 != $cpppc_options[ 'front_page_count' ] ){
             $query->set( 'posts_per_page', $cpppc_options[ 'front_page_count' ] );
         }elseif ( $cpppc_paged && isset( $cpppc_options[ 'index_count' ] ) && 0 != $cpppc_options[ 'index_count' ] ){
+            $page_count_offset = ( $cpppc_options[ 'index_count' ] - $cpppc_options[ 'front_page_count' ] );
             $home_offset = ( ( $page_number - 2 ) * $cpppc_options[ 'index_count' ] + $cpppc_options[ 'front_page_count' ] );
             $query->set( 'posts_per_page', $cpppc_options[ 'index_count' ] );
-            $query->set( 'offset', 0 - $home_offset );
+            $query->set( 'offset', $home_offset );
         }
     }elseif( $query->is_post_type_archive( $post_type_array ) ) {
         /*	We've just established that the visitor is loading an archive
@@ -366,6 +378,7 @@ function jf_cpppc_modify_query( $query ) {
         if( ! $cpppc_paged && 0 != $cpppc_options[ $my_post_type_option . '_count' ] && isset( $cpppc_options[ $my_post_type_option . '_count' ] ) ){
             $query->set( 'posts_per_page', $cpppc_options[ $my_post_type_option . '_count' ] );
         }elseif ( $cpppc_paged && 0 != $cpppc_options[ $my_post_type_option . '_count_paged' ] && isset( $cpppc_options[ $my_post_type_option . '_count_paged' ] ) ){
+            $page_count_offset = ( $cpppc_options[ $my_post_type_option . '_count_paged' ] - $cpppc_options[ $my_post_type_option . '_count' ] );
             $pt_offset = ( ( $page_number - 2 ) * $cpppc_options[ $my_post_type_option . '_count_paged' ] + $cpppc_options[ $my_post_type_option . '_count' ] );
             $query->set( 'posts_per_page', $cpppc_options[ $my_post_type_option . '_count_paged' ] );
             $query->set( 'offset', 0 - $pt_offset );
@@ -374,6 +387,7 @@ function jf_cpppc_modify_query( $query ) {
         if ( ! $cpppc_paged && 0 != $cpppc_options[ 'category_count' ] ){
             $query->set( 'posts_per_page', $cpppc_options[ 'category_count' ] );
         }elseif ( $cpppc_paged && 0 != $cpppc_options[ 'category_count_paged' ] ){
+            $page_count_offset = ( $cpppc_options[ 'category_count_paged' ] - $cpppc_options[ 'category_count' ] );
             $cat_offset = ( ( $page_number - 2 ) * $cpppc_options[ 'category_count_paged' ] + $cpppc_options[ 'category_count' ] );
             $query->set( 'posts_per_page', $cpppc_options[ 'category_count_paged' ] );
             $query->set( 'offset', 0 - $cat_offset );
@@ -382,6 +396,7 @@ function jf_cpppc_modify_query( $query ) {
         if ( ! $cpppc_paged && 0 != $cpppc_options[ 'tag_count' ] ){
             $query->set( 'posts_per_page', $cpppc_options[ 'tag_count' ] );
         }elseif ( $cpppc_paged && 0 != $cpppc_options[ 'tag_count_paged' ] ){
+            $page_count_offset = ( $cpppc_options[ 'tag_count_paged' ] - $cpppc_options[ 'tag_count' ] );
             $tag_offset = ( ( $page_number - 2 ) * $cpppc_options[ 'tag_count_paged' ] + $cpppc_options[ 'tag_count' ] );
             $query->set( 'posts_per_page', $cpppc_options[ 'tag_count_paged' ] );
             $query->set( 'offset', 0 - $tag_offset );
@@ -390,6 +405,7 @@ function jf_cpppc_modify_query( $query ) {
         if ( ! $cpppc_paged && 0 != $cpppc_options[ 'author_count' ] ) {
             $query->set( 'posts_per_page', $cpppc_options[ 'author_count' ] );
         }elseif ( $cpppc_paged && 0 != $cpppc_options[ 'author_count_paged' ] ){
+            $page_count_offset = ( $cpppc_options[ 'author_count_paged' ] - $cpppc_options[ 'author_count' ] );
             $author_offset = ( ( $page_number - 2 ) * $cpppc_options[ 'author_count_paged' ] + $cpppc_options[ 'author_count' ] );
             $query->set( 'posts_per_page', $cpppc_options[ 'author_count_paged' ] );
             $query->set( 'offset', 0 - $author_offset );
@@ -398,6 +414,7 @@ function jf_cpppc_modify_query( $query ) {
         if ( ! $cpppc_paged && 0 != $cpppc_options[ 'search_count' ] ) {
             $query->set( 'posts_per_page', $cpppc_options[ 'search_count' ] );
         }elseif ( $cpppc_paged && 0 != $cpppc_options[ 'search_count_paged' ] ){
+            $page_count_offset = ( $cpppc_options[ 'search_count_paged' ] - $cpppc_options[ 'search_count' ] );
             $s_offset = ( ( $page_number - 2 ) * $cpppc_options[ 'search_count_paged' ] + $cpppc_options[ 'search_count_paged' ] );
             $query->set( 'posts_per_page', $cpppc_options[ 'search_count_paged' ] );
             $query->set( 'offset', 0 - $s_offset );
@@ -410,6 +427,7 @@ function jf_cpppc_modify_query( $query ) {
         if ( ! $cpppc_paged && 0 != $cpppc_options[ 'archive_count' ] ) {
             $query->set( 'posts_per_page', $cpppc_options[ 'archive_count' ] );
         }elseif ( $cpppc_paged && 0 != $cpppc_options[ 'archive_count_paged' ] ){
+            $page_count_offset = ( $cpppc_options[ 'archive_count_paged' ] - $cpppc_options[ 'archive_count' ] );
             $arch_offset = ( ( $page_number - 2 ) * $cpppc_options[ 'archive_count_paged' ] + $cpppc_options[ 'archive_count' ] );
             $query->set( 'posts_per_page', $cpppc_options[ 'archive_count_paged' ] );
             $query->set( 'offset', 0 - $arch_offset );
@@ -418,9 +436,14 @@ function jf_cpppc_modify_query( $query ) {
         if ( ! $cpppc_paged && 0 != $cpppc_options[ 'default_count' ] ) {
             $query->set( 'posts_per_page', $cpppc_options[ 'default_count' ] );
         }elseif ( $cpppc_paged && 0 != $cpppc_options[ 'default_count_paged' ] ){
+            $page_count_offset = ( $cpppc_options[ 'default_count_paged' ] - $cpppc_options[ 'default_count' ] );
             $def_offset = ( ( $page_number - 2 ) * $cpppc_options[ 'default_count_paged' ] + $cpppc_options[ 'default_count' ] );
             $query->set( 'posts_per_page', $cpppc_options[ 'default_count_paged ' ] );
             $query->set( 'offset', 0 - $def_offset );
         }
     }
+
+    if ( 1 <= $page_count_offset )
+        add_filter( 'found_posts', 'jf_cpppc_correct_found_posts' );
+
 }
