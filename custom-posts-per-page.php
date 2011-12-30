@@ -160,20 +160,9 @@ function cpppc_options_validate( $input ) {
     /*	We aren't doing heavy validation yet, more like a passive aggressive failure.
          If you enter anything other than an integer, the value will be set to 0 by
          default and if a negative value is inputted, it will be corrected to positive. */
-    /*  TODO: Apply argument to each element of an array */
-    $input[ "front_page_count" ]    = absint( intval( $input[ "front_page_count" ] ) );
-    $input[ "index_count" ]         = absint( intval( $input[ "index_count" ] ) );
-    $input[ "category_count" ]      = absint( intval( $input[ "category_count" ] ) );
-    $input[ "archive_count" ]       = absint( intval( $input[ "archive_count" ] ) );
-    $input[ "tag_count" ]           = absint( intval( $input[ "tag_count" ] ) );
-    $input[ "author_count" ]        = absint( intval( $input[ "author_count" ] ) );
-    $input[ "search_count" ]        = absint( intval( $input[ "search_count" ] ) );
-    $input[ "default_count" ]       = absint( intval( $input[ "default_count" ] ) );
 
-    $all_post_types = get_post_types( array( '_builtin' => false ) );
-    foreach ( $all_post_types as $p=>$k ) {
-        $input[ $p . '_count' ] = absint( intval( $input[ $p . '_count' ] ) );
-    }
+    /*  Apply absint() to each element in the input array */
+    $input = array_map( "absint", $input );
 
     return $input;
 }
