@@ -3,7 +3,7 @@
 Plugin Name: Custom Posts Per Page
 Plugin URI: http://www.jeremyfelt.com/wordpress/plugins/custom-posts-per-page/
 Description: Shows a custom set number of posts depending on the type of page being viewed.
-Version: 1.3.1
+Version: 1.3.2
 Author: Jeremy Felt
 Author URI: http://www.jeremyfelt.com
 Text Domain: custom-posts-per-page
@@ -45,7 +45,8 @@ if ( is_admin() ){
      * the number of posts shown is changed there as well. Not ideal unless
      * we're planning on it. :)
      */
-    add_filter( 'request', 'cpppc_modify_query' );
+    //add_filter( 'request', 'cpppc_modify_query' );
+    add_action( 'pre_get_posts', 'jf_cpppc_modify_query' );
 }
 
 function cpppc_add_languages(){
@@ -411,4 +412,105 @@ function cpppc_modify_query( $request ) {
     }
 
     return $request;
+}
+
+function jf_cpppc_modify_query( $query ) {
+    /*	This is the important part of the plugin that actually modifies the query
+         at the beginning of the page before anything is displayed. */
+    $cpppc_options = get_option( 'cpppc_options' );
+    $all_post_types = get_post_types( array( '_builtin' => false ) );
+    $post_type_array = array();
+    foreach ( $all_post_types as $p=>$k ) {
+        $post_type_array[] = $p;
+    }
+
+    /*  Set our own page flag for our own sanity. */
+    $cpppc_paged = ( $query->get( 'paged' ) && 2 <= $query->get( 'paged' ) ) ? 1 : NULL;
+    $page_number = $query->get( 'paged' );
+
+    if( $query->is_home() ){
+        if ( ! $cpppc_paged && isset( $cpppc_options[ 'front_page_count' ] ) && 0 != $cpppc_options[ 'front_page_count' ] ){
+            $query->set( 'posts_per_page', $cpppc_options[ 'front_page_count' ] );
+        }elseif ( $cpppc_paged && isset( $cpppc_options[ 'index_count' ] ) && 0 != $cpppc_options[ 'index_count' ] ){
+            $home_offset = ( ( $page_number - 2 ) * $cpppc_options[ 'index_count' ] + $cpppc_options[ 'front_page_count' ] );
+            $query->set( 'posts_per_page', $cpppc_options[ 'index_count' ] );
+            $query->set( 'offset', 0 - $home_offset );
+        }
+    }elseif( $query->is_post_type_archive( $post_type_array ) ) {
+        /*	We've just established that the visitor is loading an archive
+              page of a custom post type by matching it to a general array.
+              Now we'll loop back through until we find exactly what post type
+              is matching so we can modify the request accordingly. */
+        foreach( $post_type_array as $my_post_type ) {
+            if( $query->is_post_type_archive( $my_post_type ) ) {
+                /*	Now we know for sure what custom post type we're on. */
+                $my_post_type_option = $my_post_type;
+            }
+        }
+        /*	Now check to see if we've assigned a value to this yet. When our
+              plugin is registered, only the custom post types available to us at
+              the time are assigned options. If a new custom post type has been
+              installed, it's possible it does not yet have an option. For now
+              we'll skip the request modification and let it slide by if there is
+              no match. */
+        if( ! $cpppc_paged && 0 != $cpppc_options[ $my_post_type_option . '_count' ] && isset( $cpppc_options[ $my_post_type_option . '_count' ] ) ){
+            $query->set( 'posts_per_page', $cpppc_options[ $my_post_type_option . '_count' ] );
+        }elseif ( $cpppc_paged && 0 != $cpppc_options[ $my_post_type_option . '_count_paged' ] && isset( $cpppc_options[ $my_post_type_option . '_count_paged' ] ) ){
+            $pt_offset = ( ( $page_number - 2 ) * $cpppc_options[ $my_post_type_option . '_count_paged' ] + $cpppc_options[ $my_post_type_option . '_count' ] );
+            $query->set( 'posts_per_page', $cpppc_options[ $my_post_type_option . '_count_paged' ] );
+            $query->set( 'offset', 0 - $pt_offset );
+        }
+    }elseif ( $query->is_category() ) {
+        if ( ! $cpppc_paged && 0 != $cpppc_options[ 'category_count' ] ){
+            $query->set( 'posts_per_page', $cpppc_options[ 'category_count' ] );
+        }elseif ( $cpppc_paged && 0 != $cpppc_options[ 'category_count_paged' ] ){
+            $cat_offset = ( ( $page_number - 2 ) * $cpppc_options[ 'category_count_paged' ] + $cpppc_options[ 'category_count' ] );
+            $query->set( 'posts_per_page', $cpppc_options[ 'category_count_paged' ] );
+            $query->set( 'offset', 0 - $cat_offset );
+        }
+    }elseif ( $query->is_tag() ) {
+        if ( ! $cpppc_paged && 0 != $cpppc_options[ 'tag_count' ] ){
+            $query->set( 'posts_per_page', $cpppc_options[ 'tag_count' ] );
+        }elseif ( $cpppc_paged && 0 != $cpppc_options[ 'tag_count_paged' ] ){
+            $tag_offset = ( ( $page_number - 2 ) * $cpppc_options[ 'tag_count_paged' ] + $cpppc_options[ 'tag_count' ] );
+            $query->set( 'posts_per_page', $cpppc_options[ 'tag_count_paged' ] );
+            $query->set( 'offset', 0 - $tag_offset );
+        }
+    }elseif ( $query->is_author() ) {
+        if ( ! $cpppc_paged && 0 != $cpppc_options[ 'author_count' ] ) {
+            $query->set( 'posts_per_page', $cpppc_options[ 'author_count' ] );
+        }elseif ( $cpppc_paged && 0 != $cpppc_options[ 'author_count_paged' ] ){
+            $author_offset = ( ( $page_number - 2 ) * $cpppc_options[ 'author_count_paged' ] + $cpppc_options[ 'author_count' ] );
+            $query->set( 'posts_per_page', $cpppc_options[ 'author_count_paged' ] );
+            $query->set( 'offset', 0 - $author_offset );
+        }
+    }elseif ( $query->is_search() ) {
+        if ( ! $cpppc_paged && 0 != $cpppc_options[ 'search_count' ] ) {
+            $query->set( 'posts_per_page', $cpppc_options[ 'search_count' ] );
+        }elseif ( $cpppc_paged && 0 != $cpppc_options[ 'search_count_paged' ] ){
+            $s_offset = ( ( $page_number - 2 ) * $cpppc_options[ 'search_count_paged' ] + $cpppc_options[ 'search_count_paged' ] );
+            $query->set( 'posts_per_page', $cpppc_options[ 'search_count_paged' ] );
+            $query->set( 'offset', 0 - $s_offset );
+        }
+    }elseif ( $query->is_archive() ) {
+        /*	Note that the check for is_archive needs to be below anything else
+              that WordPress may consider an archive. This includes is_tag, is_category, is_author
+              and probably some others.
+          */
+        if ( ! $cpppc_paged && 0 != $cpppc_options[ 'archive_count' ] ) {
+            $query->set( 'posts_per_page', $cpppc_options[ 'archive_count' ] );
+        }elseif ( $cpppc_paged && 0 != $cpppc_options[ 'archive_count_paged' ] ){
+            $arch_offset = ( ( $page_number - 2 ) * $cpppc_options[ 'archive_count_paged' ] + $cpppc_options[ 'archive_count' ] );
+            $query->set( 'posts_per_page', $cpppc_options[ 'archive_count_paged' ] );
+            $query->set( 'offset', 0 - $arch_offset );
+        }
+    }else{
+        if ( ! $cpppc_paged && 0 != $cpppc_options[ 'default_count' ] ) {
+            $query->set( 'posts_per_page', $cpppc_options[ 'default_count' ] );
+        }elseif ( $cpppc_paged && 0 != $cpppc_options[ 'default_count_paged' ] ){
+            $def_offset = ( ( $page_number - 2 ) * $cpppc_options[ 'default_count_paged' ] + $cpppc_options[ 'default_count' ] );
+            $query->set( 'posts_per_page', $cpppc_options[ 'default_count_paged ' ] );
+            $query->set( 'offset', 0 - $def_offset );
+        }
+    }
 }
