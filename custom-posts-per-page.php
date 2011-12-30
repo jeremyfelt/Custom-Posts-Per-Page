@@ -62,18 +62,22 @@ function cpppc_activate() {
         'front_page_count' => $default_count,
         'index_count' => $default_count,
         'category_count' => $default_count,
-        'category_count_paged' => $default_count,
         'tag_count' => $default_count,
-        'tag_count_paged' => $default_count,
         'author_count' => $default_count,
-        'author_count_paged' => $default_count,
         'archive_count' => $default_count,
-        'archive_count_paged' => $default_count,
         'search_count' => $default_count,
-        'search_count_paged' => $default_count,
         'default_count' => $default_count,
-        'default_count_paged' => $default_count
     );
+
+    /*  If the user has already set an option for one of the existing views, we don't want the paged views
+        to act differently all of a sudden. We'll match those existing values before going with the default.
+    */
+    $default_options[ 'category_count_paged' ] = isset( $current_options[ 'category_count' ] ) ? $current_options[ 'category_count' ] : $default_count;
+    $default_options[ 'tag_count_paged' ] = isset( $current_options[ 'tag_count' ] ) ? $current_options[ 'tag_count' ] : $default_count;
+    $default_options[ 'author_count_paged' ] = isset( $current_options[ 'author_count' ] ) ? $current_options[ 'author_count' ] : $default_count;
+    $default_options[ 'archive_count_paged' ] = isset( $current_options[ 'archive_count' ] ) ? $current_options[ 'archive_count' ] : $default_count;
+    $default_options[ 'search_count_paged' ] = isset( $current_options[ 'search_count' ] ) ? $current_options[ 'search_count' ] : $default_count;
+    $default_options[ 'default_count_paged' ] = isset( $current_options[ 'default_count' ] ) ? $current_options[ 'default_count' ] : $default_count;
 
     /*  Compare existing options with default options and assign accordingly. */
     $cpppc_options = wp_parse_args( $current_options, $default_options );
