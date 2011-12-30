@@ -5,7 +5,7 @@ Donate link: http://www.jeremyfelt.com/wordpress/plugins/custom-posts-per-page/
 Tags: admin, administration, settings, archives, posts-per-page, paged, posts, count, number, custom-post-type
 Requires at least: 3.1
 Tested up to: 3.3
-Stable tag: 1.3
+Stable tag: 1.3.2
 
 Custom Posts Per Page provides a settings page in your WordPress admin that allows you to specify how many posts are displayed for different views.
 
@@ -49,6 +49,12 @@ That's it! The current setting for *Blog pages show at most* under *Reading* wil
 1. An overview of the Custom Posts Per Page settings screen.
 
 == Changelog ==
+= 1.3.2 =
+* Quick immediate fix of offset issues on paged views. Exploring deeper fix.
+
+= 1.3.1 = 
+* Fix mishandling of adding new options during upgrade.
+
 = 1.3 =
 * **New** - Added options to control first page vs subsequent pages for all views.
 * Cleaned up handling of option initialization upon activation.
