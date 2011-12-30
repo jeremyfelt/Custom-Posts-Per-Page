@@ -86,7 +86,7 @@ function cpppc_activate() {
     $all_post_types = get_post_types( array( '_builtin' => false ) );
     foreach ( $all_post_types as $p=>$k ){
         $default_options[ $p . '_count' ] = isset( $current_options[ $p . '_count' ] ) ? $current_options[ $p . '_count' ] : 0;
-        $default_options[ $p . '_count_paged' ] = isset( $current_options[ $p . '_count_paged' ] ) ? $current_options[ $p . '_count_paged' ] : 0;
+        $default_options[ $p . '_count_paged' ] = isset( $current_options[ $p . '_count' ] ) ? $current_options[ $p . '_count' ] : 0;
     }
 
     /*  Compare existing options with default options and assign accordingly. */
