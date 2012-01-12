@@ -80,18 +80,11 @@ function cpppc_activate() {
 
     foreach( $option_type_array as $option_type ){
         $default_options[ $option_type . '_count' ] = $default_count;
-    }
-
-    /*  If the user has already set an option for one of the existing views, we don't want the paged views
-        to act differently all of a sudden. We'll match those existing values before going with the default.
-    */
-    foreach( $option_type_array as $option_type ) {
+        /*  If the user has already set an option for one of the existing views, we don't want the paged views
+            to act differently all of a sudden. We'll match those existing values before going with the default. */
         $default_options[ $option_type . '_count_paged' ] = isset( $current_options[ $option_type . '_count' ] ) ? $current_options[ $option_type . '_count' ] : $default_count;
-    }
-
-    /*  We will assume that the default case for handling queries outside of the main query is to leave well enough
-        alone. Therefore, these will be defaulted to 0 upon activation. */
-    foreach ( $option_type_array as $option_type ){
+        /*  We will assume that the default case for handling queries outside of the main query is to leave well enough
+            alone. Therefore, these will be defaulted to 0 upon activation. */
         $default_options[ $option_type . '_count_other' ] = isset( $current_options[ $option_type . '_count_other' ] ) ? $current_options[ $option_type . '_count_other' ] : 0;
     }
 
