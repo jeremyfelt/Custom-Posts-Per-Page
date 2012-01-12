@@ -49,7 +49,6 @@ if ( is_admin() ){
      * we're planning on it. :)
      */
     add_action( 'pre_get_posts', 'jf_cpppc_modify_query' );
-
 }
 
 function cpppc_add_languages(){
@@ -169,7 +168,6 @@ function cpppc_register_settings() {
     register_setting( 'cpppc_options', 'cpppc_options', 'cpppc_options_validate' );
     add_settings_section( 'cpppc_section_main', '', 'cpppc_section_text', 'cpppc' );
     add_settings_section( 'cpppc_section_custom', '', 'cpppc_section_custom_text', 'cpppc_custom' );
-    //add_settings_field( 'cpppc_front_page_count', __( 'Front Page posts per page:', 'custom-posts-per-page' ) , 'cpppc_front_page_count_text', 'cpppc', 'cpppc_section_main' );
     add_settings_field( 'cpppc_index_count', __( 'Main Index posts per page:', 'custom-posts-per-page' ), 'cpppc_index_count_text', 'cpppc', 'cpppc_section_main' );
     add_settings_field( 'cpppc_category_count', __( 'Category posts per page:', 'custom-posts-per-page' ), 'cpppc_category_count_text', 'cpppc', 'cpppc_section_main' );
     add_settings_field( 'cpppc_archive_count', __( 'Archive posts per page:', 'custom-posts-per-page' ), 'cpppc_archive_count_text', 'cpppc', 'cpppc_section_main' );
@@ -233,15 +231,6 @@ function cpppc_post_type_count_text() {
         echo $cpppc_options[ $p . '_count_paged' ];
         echo '"></td></tr>';
     }
-}
-
-function cpppc_front_page_count_text() {
-    /*  Display the input field for the front page post count option. */
-    $cpppc_options = get_option( 'cpppc_options' );
-
-    echo '<input id="cpppc_front_page_count" name="cpppc_options[front_page_count]" size="10" type="text" value="';
-    echo $cpppc_options[ 'front_page_count' ];
-    echo '" />';
 }
 
 function cpppc_index_count_text() {
