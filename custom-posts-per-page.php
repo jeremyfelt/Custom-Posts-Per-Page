@@ -353,6 +353,9 @@ function jf_cpppc_check_main_query( $query ) {
 function jf_cpppc_modify_query( $query ) {
     global $jf_cpppc_page_count_offset;
 
+    if ( ! jf_cpppc_check_main_query( $query ) )
+        return;
+    
     /*	This is the important part of the plugin that actually modifies the query
          at the beginning of the page before anything is displayed. */
     $cpppc_options = get_option( 'cpppc_options' );
