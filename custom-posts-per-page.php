@@ -341,6 +341,14 @@ function jf_cpppc_process_options ( $option_prefix, $cpppc_paged, $cpppc_options
     return $final_options;
 }
 
+function jf_cpppc_check_main_query( $query ) {
+    if ( method_exists( $query, 'is_main_query' ) ) {
+        return $query->is_main_query;
+    }else{
+        global $wp_the_query;
+        return $query === $wp_the_query;
+    }
+}
 
 function jf_cpppc_modify_query( $query ) {
     global $jf_cpppc_page_count_offset;
