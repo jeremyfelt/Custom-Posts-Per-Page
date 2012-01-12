@@ -57,9 +57,9 @@ function cpppc_add_languages(){
 }
 
 function cpppc_check_and_upgrade(){
-    if ( ! get_option( 'cpppc_upgrade' ) ){
+    if ( '1.4' != get_option( 'cpppc_upgrade' ) ) {
         cpppc_activate();
-        update_option( 'cpppc_upgrade', '1.3' );
+        update_option( 'cpppc_upgrade', '1.4' );
     }
 }
 
@@ -70,26 +70,30 @@ function cpppc_activate() {
     $default_count = get_option( 'posts_per_page' );
     $current_options = get_option( 'cpppc_options' );
 
-    $default_options = array(
-        'front_page_count' => $default_count,
-        'index_count' => $default_count,
-        'category_count' => $default_count,
-        'tag_count' => $default_count,
-        'author_count' => $default_count,
-        'archive_count' => $default_count,
-        'search_count' => $default_count,
-        'default_count' => $default_count,
-    );
+    /* TODO: Need a way to merge front_page and index into one name so they fit elsewhere. */
+
+    $default_options = array();
+    $default_options[ 'front_page_count' ] = $default_count;
+    $default_options[ 'index_count' ] = $default_count;
+
+    $option_type_array = array( 'category', 'tag', 'author', 'archive', 'search', 'default' );
+
+    foreach( $option_type_array as $option_type ){
+        $default_options[ $option_type . '_count' ] = $default_count;
+    }
 
     /*  If the user has already set an option for one of the existing views, we don't want the paged views
         to act differently all of a sudden. We'll match those existing values before going with the default.
     */
-    $default_options[ 'category_count_paged' ] = isset( $current_options[ 'category_count' ] ) ? $current_options[ 'category_count' ] : $default_count;
-    $default_options[ 'tag_count_paged' ] = isset( $current_options[ 'tag_count' ] ) ? $current_options[ 'tag_count' ] : $default_count;
-    $default_options[ 'author_count_paged' ] = isset( $current_options[ 'author_count' ] ) ? $current_options[ 'author_count' ] : $default_count;
-    $default_options[ 'archive_count_paged' ] = isset( $current_options[ 'archive_count' ] ) ? $current_options[ 'archive_count' ] : $default_count;
-    $default_options[ 'search_count_paged' ] = isset( $current_options[ 'search_count' ] ) ? $current_options[ 'search_count' ] : $default_count;
-    $default_options[ 'default_count_paged' ] = isset( $current_options[ 'default_count' ] ) ? $current_options[ 'default_count' ] : $default_count;
+    foreach( $option_type_array as $option_type ) {
+        $default_options[ $option_type . '_count_paged' ] = isset( $current_options[ $option_type . '_count' ] ) ? $current_options[ $option_type . '_count' ] : $default_count;
+    }
+
+    /*  We will assume that the default case for handling queries outside of the main query is to leave well enough
+        alone. Therefore, these will be defaulted to 0 upon activation. */
+    foreach ( $option_type_array as $option_type ){
+        $default_options[ $option_type . '_count_other' ] = isset( $current_options[ $option_type . '_count_other' ] ) ? $current_options[ $option_type . '_count_other' ] : 0;
+    }
 
     /*  We'll also get all of the currently registered custom post types and give them a default
         value of 0 if one has not previously been set. Custom post types are a special breed and
@@ -99,6 +103,7 @@ function cpppc_activate() {
     foreach ( $all_post_types as $p=>$k ){
         $default_options[ $p . '_count' ] = isset( $current_options[ $p . '_count' ] ) ? $current_options[ $p . '_count' ] : 0;
         $default_options[ $p . '_count_paged' ] = isset( $current_options[ $p . '_count' ] ) ? $current_options[ $p . '_count' ] : 0;
+        $default_options[ $p . '_count_other' ] = isset( $current_options[ $p . '_countother' ] ) ? $current_options[ $p . '_count_other' ] : 0;
     }
 
     /*  Compare existing options with default options and assign accordingly. */
