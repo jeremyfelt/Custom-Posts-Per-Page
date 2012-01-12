@@ -343,7 +343,7 @@ function jf_cpppc_process_options ( $option_prefix, $cpppc_paged, $cpppc_options
 
 function jf_cpppc_check_main_query( $query ) {
     if ( method_exists( $query, 'is_main_query' ) ) {
-        return $query->is_main_query;
+        return $query->is_main_query();
     }else{
         global $wp_the_query;
         return $query === $wp_the_query;
@@ -355,7 +355,7 @@ function jf_cpppc_modify_query( $query ) {
 
     if ( ! jf_cpppc_check_main_query( $query ) )
         return;
-    
+
     /*	This is the important part of the plugin that actually modifies the query
          at the beginning of the page before anything is displayed. */
     $cpppc_options = get_option( 'cpppc_options' );
@@ -372,12 +372,13 @@ function jf_cpppc_modify_query( $query ) {
     if( $query->is_home() ){
         /*  TODO: Figure out a way to clarify & rename front_page or index to match. Ugly as is. */
         if ( ! $cpppc_paged && isset( $cpppc_options[ 'front_page_count' ] ) && 0 != $cpppc_options[ 'front_page_count' ] ){
-            $query->set( 'posts_per_page', $cpppc_options[ 'front_page_count' ] );
+            $final_options[ 'posts' ] = $cpppc_options[ 'front_page_count' ];
+            $final_options[ 'offset' ] = 0;
         }elseif ( $cpppc_paged && isset( $cpppc_options[ 'index_count' ] ) && 0 != $cpppc_options[ 'index_count' ] ){
             $jf_cpppc_page_count_offset = ( $cpppc_options[ 'index_count' ] - $cpppc_options[ 'front_page_count' ] );
             $home_offset = ( ( $page_number - 2 ) * $cpppc_options[ 'index_count' ] + $cpppc_options[ 'front_page_count' ] );
-            $query->set( 'posts_per_page', $cpppc_options[ 'index_count' ] );
-            $query->set( 'offset', $home_offset );
+            $final_options[ 'posts' ] = $cpppc_options[ 'index_count' ];
+            $final_options[ 'offset' ] = $home_offset;
         }
     }elseif( $query->is_post_type_archive( $post_type_array ) ) {
         /*	We've just established that the visitor is loading an archive
