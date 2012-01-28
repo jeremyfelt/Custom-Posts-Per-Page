@@ -12,3 +12,4 @@ if( ! defined( 'ABSPATH' ) && ! defined( 'WP_UNINSTALL_PLUGIN' ) )
 
 /*  Delete the cpppc_options */
 delete_option( 'cpppc_options' );
+delete_option( 'cpppc_upgrade' );

@@ -29,7 +29,7 @@ License: GPL2
 
 $jf_cpppc_page_count_offset = 0;
 
-register_activation_hook( __FILE__, 'cpppc_activate' );
+register_activation_hook( __FILE__, 'cpppc_check_and_upgrade' );
 
 if ( is_admin() ) {
 	/*	If we're on the admin screen, we'll want to make sure that
@@ -56,55 +56,63 @@ function cpppc_add_languages() {
 }
 
 function cpppc_check_and_upgrade() {
-	if ( '1.4' != get_option( 'cpppc_upgrade' ) ) {
+	if ( ! get_option( 'cpppc_upgrade' ) || '1.4' == get_option( 'cpppc_upgrade' ) ) {
 		cpppc_activate();
-		update_option( 'cpppc_upgrade', '1.4' );
+
+		$cpppc_options = get_option( 'cpppc_options' );
+
+		if ( isset( $cpppc_options[ 'front_page_count' ] ) ) {
+			$cpppc_options[ 'front_count' ] = $cpppc_options[ 'front_page_count' ];
+			unset( $cpppc_options[ 'front_page_count' ] );
+		}
+
+		if ( isset( $cpppc_options[ 'index_count' ] ) ) {
+			$cpppc_options[ 'front_count_paged' ] = $cpppc_options[ 'index_count' ];
+			unset( $cpppc_options[ 'index_count' ] );
+		}
+
+		update_option( 'cpppc_options', $cpppc_options );
+		update_option( 'cpppc_upgrade', '1.5' );
 	}
 }
 
 function cpppc_activate() {
-	/*  When the plugin is first activated, we'll set some default values in
-			an options array. We'll pull the default value from the current Reading setting
-			for 'posts_per_page' so that nothing changes unexpectedly. */
+	/*  When the plugin is first activated, we'll set some default values in an options array. We'll
+	 *  pull the default value from the current Reading setting	for 'posts_per_page' so that nothing
+	 *  changes unexpectedly. */
 	$default_count   = get_option( 'posts_per_page' );
 	$current_options = get_option( 'cpppc_options' );
-
-	/* TODO: Need a way to merge front_page and index into one name so they fit elsewhere. */
-
 	$default_options = array();
-	$default_options[ 'front_page_count' ] = $default_count;
-	$default_options[ 'index_count' ]      = $default_count;
 
-	$option_type_array = array( 'category', 'tag', 'author', 'archive', 'search', 'default' );
+	$option_type_array = array( 'front', 'category', 'tag', 'author', 'archive', 'search', 'default' );
 
 	foreach ( $option_type_array as $option_type ) {
 		$default_options[ $option_type . '_count' ] = $default_count;
-		/*  If the user has already set an option for one of the existing views, we don't want the paged views
-					to act differently all of a sudden. We'll match those existing values before going with the default. */
+		/*  If the user has already set an option for one of the existing views, we don't want the
+		 *  paged views to act differently all of a sudden. We'll match those existing values before
+		 *  going with the default. */
 		$default_options[ $option_type . '_count_paged' ] = isset( $current_options[ $option_type . '_count' ] ) ? $current_options[ $option_type . '_count' ] : $default_count;
 	}
 
-	/*  We'll also get all of the currently registered custom post types and give them a default
-			value of 0 if one has not previously been set. Custom post types are a special breed and
-			we don't necessarily want them to match the default posts_per_page value without a
-			conscious decision by the user. */
+	/*  We'll also get all of the currently registered custom post types and give them a default value
+	 *  of 0 if one has not previously been set. Custom post types are a special breed and we don't
+	 *  necessarily want them to match the default posts_per_page value without a conscious decision
+	 *  by the user. */
 	$all_post_types = get_post_types( array( '_builtin' => false ) );
-	foreach ( $all_post_types as $p=> $k ) {
-		$default_options[ $p . '_count' ]       = isset( $current_options[ $p . '_count' ]) ? $current_options[ $p . '_count' ] : 0;
-		$default_options[ $p . '_count_paged' ] = isset( $current_options[ $p . '_count' ]) ? $current_options[ $p . '_count' ] : 0;
+	foreach ( $all_post_types as $p => $k ) {
+		$default_options[ $p . '_count' ]       = isset( $current_options[ $p . '_count' ] ) ? $current_options[ $p . '_count' ] : 0;
+		$default_options[ $p . '_count_paged' ] = isset( $current_options[ $p . '_count' ] ) ? $current_options[ $p . '_count' ] : 0;
 	}
 
 	/*  Compare existing options with default options and assign accordingly. */
 	$cpppc_options = wp_parse_args( $current_options, $default_options );
 
-	/*  Update the new options. */
 	update_option( 'cpppc_options', $cpppc_options );
 }
 
-
-function cpppc_plugin_action_links($links, $file) {
+function cpppc_plugin_action_links( $links, $file ) {
 	/*  Function gratefully taken (and barely modified) from Pippin Williamson's
-			WPMods article: http://www.wpmods.com/adding-plugin-action-links/ */
+	 *  WPMods article: http://www.wpmods.com/adding-plugin-action-links/ */
 	static $this_plugin;
 
 	if ( !$this_plugin )
@@ -116,7 +124,6 @@ function cpppc_plugin_action_links($links, $file) {
 		$settings_link = '<a href="' . get_bloginfo( 'wpurl' ) . $settings_path . '">' . __('Settings', 'custom-posts-per-page') . '</a>';
 		array_unshift( $links, $settings_link ); // add the link to the list
 	}
-
 	return $links;
 }
 
@@ -227,11 +234,11 @@ function cpppc_index_count_text() {
 	/*	Display the input field for the index page post count option. */
 	$cpppc_options = get_option( 'cpppc_options' );
 
-	echo '<input id="cpppc_index_count[0]" name="cpppc_options[front_page_count]" size="10" type="text" value="';
-	echo $cpppc_options[ 'front_page_count' ];
+	echo '<input id="cpppc_index_count[0]" name="cpppc_options[front_count]" size="10" type="text" value="';
+	echo $cpppc_options[ 'front_count' ];
 	echo '" />';
-	echo '&nbsp;<input id="cpppc_index_count[1]" name="cpppc_options[index_count]" size="10" type="text" value="';
-	echo $cpppc_options[ 'index_count' ];
+	echo '&nbsp;<input id="cpppc_index_count[1]" name="cpppc_options[front_count_paged]" size="10" type="text" value="';
+	echo $cpppc_options[ 'front_count_paged' ];
 	echo '" />';
 }
 
@@ -323,6 +330,7 @@ function jf_cpppc_check_main_query( $query ) {
 
 function jf_cpppc_process_options( $option_prefix, $cpppc_paged, $cpppc_options, $page_number = NULL ) {
 	global $jf_cpppc_page_count_offset;
+
 	$final_options = array();
 
 	if ( !$cpppc_paged && 0 != $cpppc_options[ $option_prefix . '_count' ] ) {
@@ -358,16 +366,7 @@ function jf_cpppc_modify_query( $query ) {
 	$page_number = $query->get( 'paged' );
 
 	if ( $query->is_home() ) {
-		/*  TODO: Figure out a way to clarify & rename front_page or index to match. Ugly as is. */
-		if ( !$cpppc_paged && isset( $cpppc_options[ 'front_page_count' ] ) && 0 != $cpppc_options[ 'front_page_count' ] ) {
-			$final_options[ 'posts' ]  = $cpppc_options[ 'front_page_count' ];
-			$final_options[ 'offset' ] = 0;
-		} elseif ( $cpppc_paged && isset( $cpppc_options[ 'index_count' ] ) && 0 != $cpppc_options[ 'index_count' ] ) {
-			$jf_cpppc_page_count_offset = ( $cpppc_options[ 'index_count' ] - $cpppc_options[ 'front_page_count' ] );
-			$home_offset                = ( ($page_number - 2) * $cpppc_options[ 'index_count' ] + $cpppc_options[ 'front_page_count' ] );
-			$final_options[ 'posts' ]   = $cpppc_options[ 'index_count' ];
-			$final_options[ 'offset' ]  = $home_offset;
-		}
+		$final_options = jf_cpppc_process_options( 'front', $cpppc_paged, $cpppc_options, $page_number );
 	} elseif ( $query->is_post_type_archive( $post_type_array ) ) {
 		/*	We've just established that the visitor is loading an archive page of a custom post type by matching
 		 *  it to a general array. Now we'll loop back through until we find exactly what post type is matching
