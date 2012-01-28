@@ -27,7 +27,6 @@ License: GPL2
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-global $jf_cpppc_page_count_offset;
 $jf_cpppc_page_count_offset = 0;
 
 register_activation_hook( __FILE__, 'cpppc_activate' );
@@ -83,9 +82,6 @@ function cpppc_activate() {
         /*  If the user has already set an option for one of the existing views, we don't want the paged views
             to act differently all of a sudden. We'll match those existing values before going with the default. */
         $default_options[ $option_type . '_count_paged' ] = isset( $current_options[ $option_type . '_count' ] ) ? $current_options[ $option_type . '_count' ] : $default_count;
-        /*  We will assume that the default case for handling queries outside of the main query is to leave well enough
-            alone. Therefore, these will be defaulted to 0 upon activation. */
-        $default_options[ $option_type . '_count_other' ] = isset( $current_options[ $option_type . '_count_other' ] ) ? $current_options[ $option_type . '_count_other' ] : 0;
     }
 
     /*  We'll also get all of the currently registered custom post types and give them a default
@@ -96,7 +92,6 @@ function cpppc_activate() {
     foreach ( $all_post_types as $p=>$k ){
         $default_options[ $p . '_count' ] = isset( $current_options[ $p . '_count' ] ) ? $current_options[ $p . '_count' ] : 0;
         $default_options[ $p . '_count_paged' ] = isset( $current_options[ $p . '_count' ] ) ? $current_options[ $p . '_count' ] : 0;
-        $default_options[ $p . '_count_other' ] = isset( $current_options[ $p . '_countother' ] ) ? $current_options[ $p . '_count_other' ] : 0;
     }
 
     /*  Compare existing options with default options and assign accordingly. */
@@ -329,30 +324,17 @@ function jf_cpppc_check_main_query( $query ) {
     }
 }
 
-function jf_cpppc_process_options ( $option_prefix, $cpppc_paged, $cpppc_options, $cpppc_main, $page_number = NULL ) {
+function jf_cpppc_process_options ( $option_prefix, $cpppc_paged, $cpppc_options, $page_number = NULL ) {
     global $jf_cpppc_page_count_offset;
     $final_options = array();
 
-    if ( 1 == $cpppc_main ) {
-        if ( ! $cpppc_paged && 0 != $cpppc_options[ $option_prefix . '_count' ] ) {
+    if ( ! $cpppc_paged && 0 != $cpppc_options[ $option_prefix . '_count' ] ) {
             $final_options[ 'posts' ] = $cpppc_options[ $option_prefix . '_count' ];
             $final_options[ 'offset' ] = 0;
-        }elseif( $cpppc_paged & 0 != $cpppc_options[ $option_prefix . '_count_paged' ] ) {
+    }elseif( $cpppc_paged & 0 != $cpppc_options[ $option_prefix . '_count_paged' ] ) {
             $jf_cpppc_page_count_offset = ( $cpppc_options[ $option_prefix . '_count_paged' ] - $cpppc_options[ $option_prefix . '_count' ] );
             $final_options[ 'offset' ] = ( ( $page_number - 2 ) * $cpppc_options[ $option_prefix . '_count_paged' ] + $cpppc_options[ $option_prefix . '_count' ] );
             $final_options[ 'posts' ] = $cpppc_options[ $option_prefix . '_count_paged' ];
-        }
-    }else{
-        if ( ! $cpppc_paged && 0 != $cpppc_options[ $option_prefix . '_count_other' ] ) {
-            $final_options[ 'posts' ] = $cpppc_options[ $option_prefix . '_count_other' ];
-            $final_options[ 'offset' ] = 0;
-        }elseif( $cpppc_paged && 0 != $cpppc_options[ $option_prefix . '_count_other' ] ) {
-            $jf_cpppc_page_count_offset = 0;
-            $final_options[ 'offset' ] = ( ( $page_number - 2 ) * $cpppc_options[ $option_prefix . '_count_other' ] + $cpppc_options[ $option_prefix . '_count_other' ] );
-            $final_options[ 'posts' ] = $cpppc_options[ $option_prefix . '_count_other' ];
-        }else{
-            $final_options = NULL;
-        }
     }
 
     return $final_options;
@@ -361,11 +343,9 @@ function jf_cpppc_process_options ( $option_prefix, $cpppc_paged, $cpppc_options
 function jf_cpppc_modify_query( $query ) {
     global $jf_cpppc_page_count_offset;
 
-    $cpppc_main = jf_cpppc_check_main_query( $query ) ? 1 : NULL;
-
-    /* TODO: Delete next 2 lines soon */
-    //if ( ! jf_cpppc_check_main_query( $query ) )
-    //    return;
+	/*  If this isn't the main query, we'll avoid altering the results. */
+    if ( ! jf_cpppc_check_main_query( $query ) )
+        return;
 
     /*	This is the important part of the plugin that actually modifies the query
          at the beginning of the page before anything is displayed. */
@@ -408,23 +388,23 @@ function jf_cpppc_modify_query( $query ) {
               installed, it's possible it does not yet have an option. For now
               we'll skip the request modification and let it slide by if there is
               no match. */
-        $final_options = jf_cpppc_process_options( $my_post_type_option, $cpppc_paged, $cpppc_options, $cpppc_main, $page_number );
+        $final_options = jf_cpppc_process_options( $my_post_type_option, $cpppc_paged, $cpppc_options, $page_number );
     }elseif ( $query->is_category() ) {
-        $final_options = jf_cpppc_process_options( 'category', $cpppc_paged, $cpppc_options, $cpppc_main, $page_number );
+        $final_options = jf_cpppc_process_options( 'category', $cpppc_paged, $cpppc_options, $page_number );
     }elseif ( $query->is_tag() ) {
-        $final_options = jf_cpppc_process_options( 'tag', $cpppc_paged, $cpppc_options, $cpppc_main, $page_number );
+        $final_options = jf_cpppc_process_options( 'tag', $cpppc_paged, $cpppc_options, $page_number );
     }elseif ( $query->is_author() ) {
-        $final_options = jf_cpppc_process_options( 'author', $cpppc_paged, $cpppc_options, $cpppc_main, $page_number );
+        $final_options = jf_cpppc_process_options( 'author', $cpppc_paged, $cpppc_options, $page_number );
     }elseif ( $query->is_search() ) {
-        $final_options = jf_cpppc_process_options( 'search', $cpppc_paged, $cpppc_options, $cpppc_main, $page_number );
+        $final_options = jf_cpppc_process_options( 'search', $cpppc_paged, $cpppc_options, $page_number );
     }elseif ( $query->is_archive() ) {
         /*	Note that the check for is_archive needs to be below anything else
             that WordPress may consider an archive. This includes is_tag, is_category, is_author
             and probably some others.
         */
-        $final_options = jf_cpppc_process_options( 'archive', $cpppc_paged, $cpppc_options, $cpppc_main, $page_number );
+        $final_options = jf_cpppc_process_options( 'archive', $cpppc_paged, $cpppc_options, $page_number );
     }else{
-        $final_options = jf_cpppc_process_options( 'default', $cpppc_paged, $cpppc_options, $cpppc_main, $page_number );
+        $final_options = jf_cpppc_process_options( 'default', $cpppc_paged, $cpppc_options, $page_number );
     }
 
     if ( isset( $final_options[ 'posts' ] ) ) {
