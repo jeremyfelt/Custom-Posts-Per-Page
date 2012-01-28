@@ -56,7 +56,7 @@ function cpppc_add_languages() {
 }
 
 function cpppc_check_and_upgrade() {
-	if ( ! get_option( 'cpppc_upgrade' ) || '1.4' == get_option( 'cpppc_upgrade' ) ) {
+	if ( ! get_option( 'cpppc_upgrade' ) || '1.3' == get_option( 'cpppc_upgrade' ) ) {
 		cpppc_activate();
 
 		$cpppc_options = get_option( 'cpppc_options' );
@@ -72,7 +72,7 @@ function cpppc_check_and_upgrade() {
 		}
 
 		update_option( 'cpppc_options', $cpppc_options );
-		update_option( 'cpppc_upgrade', '1.5' );
+		update_option( 'cpppc_upgrade', '1.4' );
 	}
 }
 
