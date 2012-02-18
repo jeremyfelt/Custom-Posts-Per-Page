@@ -115,7 +115,7 @@ function cpppc_plugin_action_links( $links, $file ) {
 	 *  WPMods article: http://www.wpmods.com/adding-plugin-action-links/ */
 	static $this_plugin;
 
-	if ( !$this_plugin )
+	if ( ! $this_plugin )
 		$this_plugin = plugin_basename( __FILE__ );
 
 	/*  Make sure we are on the correct plugin */
@@ -129,26 +129,26 @@ function cpppc_plugin_action_links( $links, $file ) {
 
 function cpppc_add_settings() {
 	/*	Add the sub-menu item under the Settings top-level menu. */
-	add_options_page( __('Posts Per Page', 'custom-posts-per-page'), __('Posts Per Page', 'custom-posts-per-page'), 'manage_options', 'post-count-settings', 'cpppc_view_settings' );
+	add_options_page( __( 'Posts Per Page', 'custom-posts-per-page' ), __( 'Posts Per Page', 'custom-posts-per-page' ), 'manage_options', 'post-count-settings', 'cpppc_view_settings' );
 }
 
 function cpppc_view_settings() {
 	/*	Display the main settings view for Custom Posts Per Page. */
 	echo '<div class="wrap">
 		<div class="icon32" id="icon-options-general"></div>
-			<h2>' . __('Custom Posts Per Page', 'custom-posts-per-page') . '</h2>
-			<h3>' . __('Overview', 'custom-posts-per-page') . ':</h3>
-			<p style="margin-left:12px;max-width:640px;">' . __('The settings below allow you to specify how many posts per
+			<h2>' . __( 'Custom Posts Per Page', 'custom-posts-per-page' ) . '</h2>
+			<h3>' . __( 'Overview', 'custom-posts-per-page' ) . ':</h3>
+			<p style="margin-left:12px;max-width:640px;">' . __( 'The settings below allow you to specify how many posts per
 			page are displayed to readers depending on the which type of page is being viewed.</p>
 			<p style="margin-left:12px;max-width:640px;">Different values can
 			be set for your your main view, category views, tag views, author views, archive views, search views, and views
 			for custom post types. For each of these views, a different setting is available for the first page and subsequent pages.
 			In addition to these, a default value is available that can be set for any
-			other pages not covered by this.', 'custom-posts-per-page') . '</p>';
-	echo '<p style="margin-left:12px;max-width:640px;">' . __('The initial value used on activation was pulled from the setting', 'custom-posts-per-page');
-	echo ' <em>' . __('Blog Pages show at most', 'custom-posts-per-page') . '</em> ';
-	echo __('found in the', 'custom-posts-per-page') . ' <a href="' . get_bloginfo('wpurl') . 'wp-admin/options-reading.php' . '" title="Reading Settings">';
-	echo __('Reading', 'custom-posts-per-page') . '</a> ' . __('options', 'custom-posts-per-page') . '.</p>';
+			other pages not covered by this.', 'custom-posts-per-page' ) . '</p>';
+	echo '<p style="margin-left:12px;max-width:640px;">' . __( 'The initial value used on activation was pulled from the setting', 'custom-posts-per-page' );
+	echo ' <em>' . __( 'Blog Pages show at most', 'custom-posts-per-page' ) . '</em> ';
+	echo __( 'found in the', 'custom-posts-per-page' ) . ' <a href="' . get_bloginfo('wpurl') . 'wp-admin/options-reading.php' . '" title="Reading Settings">';
+	echo __( 'Reading', 'custom-posts-per-page' ) . '</a> ' . __( 'options', 'custom-posts-per-page' ) . '.</p>';
 	echo '<form method="post" action="options.php">';
 
 	settings_fields( 'cpppc_options' );
@@ -156,7 +156,7 @@ function cpppc_view_settings() {
 	do_settings_sections( 'cpppc_custom' ); // Display the section of settings that handles custom post types.
 
 	echo '<p class="submit"><input type="submit" class="button-primary" value="';
-	_e('Save Changes', 'custom-posts-per-page');
+	_e( 'Save Changes', 'custom-posts-per-page' );
 	echo '" />
 			</p>
 			</form>
@@ -168,13 +168,13 @@ function cpppc_register_settings() {
 	register_setting( 'cpppc_options', 'cpppc_options', 'cpppc_options_validate' );
 	add_settings_section( 'cpppc_section_main', '', 'cpppc_section_text', 'cpppc' );
 	add_settings_section( 'cpppc_section_custom', '', 'cpppc_section_custom_text', 'cpppc_custom' );
-	add_settings_field( 'cpppc_index_count', __('Main Index posts per page:', 'custom-posts-per-page'), 'cpppc_index_count_text', 'cpppc', 'cpppc_section_main' );
-	add_settings_field( 'cpppc_category_count', __('Category posts per page:', 'custom-posts-per-page'), 'cpppc_category_count_text', 'cpppc', 'cpppc_section_main' );
-	add_settings_field( 'cpppc_archive_count', __('Archive posts per page:', 'custom-posts-per-page'), 'cpppc_archive_count_text', 'cpppc', 'cpppc_section_main' );
-	add_settings_field( 'cpppc_tag_count', __('Tag posts per page:', 'custom-posts-per-page'), 'cpppc_tag_count_text', 'cpppc', 'cpppc_section_main' );
-	add_settings_field( 'cpppc_author_count', __('Author posts per page:', 'custom-posts-per-page'), 'cpppc_author_count_text', 'cpppc', 'cpppc_section_main' );
-	add_settings_field( 'cpppc_search_count', __('Search posts per page:', 'custom-posts-per-page'), 'cpppc_search_count_text', 'cpppc', 'cpppc_section_main' );
-	add_settings_field( 'cpppc_default_count', __('Default posts per page:', 'custom-posts-per-page'), 'cpppc_default_count_text', 'cpppc', 'cpppc_section_main' );
+	add_settings_field( 'cpppc_index_count', __( 'Main Index posts per page:', 'custom-posts-per-page' ), 'cpppc_index_count_text', 'cpppc', 'cpppc_section_main' );
+	add_settings_field( 'cpppc_category_count', __( 'Category posts per page:', 'custom-posts-per-page' ), 'cpppc_category_count_text', 'cpppc', 'cpppc_section_main' );
+	add_settings_field( 'cpppc_archive_count', __( 'Archive posts per page:', 'custom-posts-per-page' ), 'cpppc_archive_count_text', 'cpppc', 'cpppc_section_main' );
+	add_settings_field( 'cpppc_tag_count', __( 'Tag posts per page:', 'custom-posts-per-page' ), 'cpppc_tag_count_text', 'cpppc', 'cpppc_section_main' );
+	add_settings_field( 'cpppc_author_count', __( 'Author posts per page:', 'custom-posts-per-page' ), 'cpppc_author_count_text', 'cpppc', 'cpppc_section_main' );
+	add_settings_field( 'cpppc_search_count', __( 'Search posts per page:', 'custom-posts-per-page' ), 'cpppc_search_count_text', 'cpppc', 'cpppc_section_main' );
+	add_settings_field( 'cpppc_default_count', __( 'Default posts per page:', 'custom-posts-per-page' ), 'cpppc_default_count_text', 'cpppc', 'cpppc_section_main' );
 	add_settings_field( 'cpppc_post_type_count', '', 'cpppc_post_type_count_text', 'cpppc_custom', 'cpppc_section_custom' );
 }
 
@@ -188,19 +188,19 @@ function cpppc_options_validate($input) {
 
 function cpppc_section_text() {
 	echo '<h3>' . __('Main Settings', 'custom-posts-per-page') . ':</h3>
-		<p style="max-width:640px;margin-left:12px;">' . __('This section allows you to modify page view types that are
+		<p style="max-width:640px;margin-left:12px;">' . __( 'This section allows you to modify page view types that are
 		associated with WordPress by default. When an option is set to 0, it will not modify any page requests for
-		that view and will instead allow default values to pass through.', 'custom-posts-per-page') . '</p>';
+		that view and will instead allow default values to pass through.', 'custom-posts-per-page' ) . '</p>';
 	echo '<p style="max-width:460px;margin-left:12px;"><strong>Please Note:</strong> <em>For each setting, the box on the <strong>LEFT</strong> controls the the number of posts displayed on
 	the first page of that view while the box on the <strong>RIGHT</strong> controls the number of posts seen on pages 2, 3, 4, etc... of that view.</em></p>';
 }
 
 function cpppc_section_custom_text() {
-	echo '<h3>' . __('Custom Post Type Specific Settings', 'custom-posts-per-page') . ':</h3>
-	<p style="max-width:640px;margin-left:12px;">' . __('This section contains a list of all of your registered custom post
+	echo '<h3>' . __( 'Custom Post Type Specific Settings', 'custom-posts-per-page' ) . ':</h3>
+	<p style="max-width:640px;margin-left:12px;">' . __( 'This section contains a list of all of your registered custom post
 	types. In order to not conflict with other plugins or themes, these are set to 0 by default. When an option is
 	set to 0, it will not modify any page requests for that custom post type archive. For Custom Posts Per Page to
-	control the number of posts to display, these will need to be changed.', 'custom-post-per-page') . '</p>';
+	control the number of posts to display, these will need to be changed.', 'custom-post-per-page' ) . '</p>';
 }
 
 function cpppc_post_type_count_text() {
@@ -214,9 +214,8 @@ function cpppc_post_type_count_text() {
 		 *  to us when our plugin is registered. If a custom post type becomes
 		 *  available after our plugin is installed, we'll want to catch it and
 		 *  assign a good value. */
-		if ( ! isset($cpppc_options[ $p . '_count' ]) ) {
+		if ( ! isset( $cpppc_options[ $p . '_count' ] ) )
 			$cpppc_options[ $p . '_count' ] = 0;
-		}
 
 		$this_post_data = get_post_type_object( $p );
 
@@ -352,8 +351,8 @@ function jf_cpppc_modify_query( $query ) {
 	if ( ! jf_cpppc_check_main_query( $query ) )
 		return;
 
-	/*	This is the important part of the plugin that actually modifies the query
-			 at the beginning of the page before anything is displayed. */
+	/*  This is the important part of the plugin that actually modifies the
+	 *  query at the beginning of the page before anything is displayed. */
 	$cpppc_options   = get_option( 'cpppc_options' );
 	$all_post_types  = get_post_types( array( '_builtin' => false ) );
 	$post_type_array = array();
