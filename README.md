@@ -6,7 +6,7 @@ Donate link: http://www.jeremyfelt.com/wordpress/plugins/custom-posts-per-page/
 Tags: admin, administration, settings, archives, posts-per-page, paged, posts, count, number, custom-post-type
 Requires at least: 3.1
 Tested up to: 3.3
-Stable tag: 1.3.2
+Stable tag: 1.4
 
 Custom Posts Per Page provides a settings page in your WordPress admin that allows you to specify how many posts are displayed for different views.
 
