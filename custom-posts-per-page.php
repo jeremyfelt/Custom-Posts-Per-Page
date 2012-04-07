@@ -3,7 +3,7 @@
 Plugin Name: Custom Posts Per Page
 Plugin URI: http://www.jeremyfelt.com/wordpress/plugins/custom-posts-per-page/
 Description: Shows a custom set number of posts depending on the type of page being viewed.
-Version: 1.4
+Version: 1.5
 Author: Jeremy Felt
 Author URI: http://www.jeremyfelt.com
 Text Domain: custom-posts-per-page
