@@ -32,6 +32,11 @@ class Custom_Posts_Per_Page_Foghlaim {
 	private $page_count_offset = 0;
 
 	/**
+	 * @var array contains the option data for our query that we may need to share across methods
+	 */
+	private $final_options = array();
+
+	/**
 	 * Start up the plugin by adding appropriate actions and filters.
 	 *
 	 * Our pre_get_posts action should only happen on non admin screens
@@ -396,7 +401,7 @@ class Custom_Posts_Per_Page_Foghlaim {
 		$page_number = $query->get( 'paged' );
 
 		if ( $query->is_home() ) {
-			$final_options = $this->process_options( 'front', $cpppc_paged, $cpppc_options, $page_number );
+			$this->process_options( 'front', $cpppc_paged, $cpppc_options, $page_number );
 		} elseif ( $query->is_post_type_archive( $post_type_array ) ) {
 			/*	We've just established that the visitor is loading an archive page of a custom post type by matching
 			 *  it to a general array. Now we'll loop back through until we find exactly what post type is matching
@@ -411,26 +416,26 @@ class Custom_Posts_Per_Page_Foghlaim {
 			 *  post types available to us at the time are assigned options. If a new custom post type has been
 			 *  installed, it's possible it does not yet have an option. For now we'll skip the request modification
 			 *  and let it slide by if there is no match. */
-			$final_options = $this->process_options( $my_post_type_option, $cpppc_paged, $cpppc_options, $page_number );
+			$this->process_options( $my_post_type_option, $cpppc_paged, $cpppc_options, $page_number );
 		} elseif ( $query->is_category() ) {
-			$final_options = $this->process_options( 'category', $cpppc_paged, $cpppc_options, $page_number );
+			$this->process_options( 'category', $cpppc_paged, $cpppc_options, $page_number );
 		} elseif ( $query->is_tag() ) {
-			$final_options = $this->process_options( 'tag', $cpppc_paged, $cpppc_options, $page_number );
+			$this->process_options( 'tag', $cpppc_paged, $cpppc_options, $page_number );
 		} elseif ( $query->is_author() ) {
-			$final_options = $this->process_options( 'author', $cpppc_paged, $cpppc_options, $page_number );
+			$this->process_options( 'author', $cpppc_paged, $cpppc_options, $page_number );
 		} elseif ( $query->is_search() ) {
-			$final_options = $this->process_options( 'search', $cpppc_paged, $cpppc_options, $page_number );
+			$this->process_options( 'search', $cpppc_paged, $cpppc_options, $page_number );
 		} elseif ( $query->is_archive() ) {
 			/*  Note that the check for is_archive needs to be below anything else that WordPress may consider an
 			 *  archive. This includes is_tag, is_category, is_author and probably some others.	*/
-			$final_options = $this->process_options( 'archive', $cpppc_paged, $cpppc_options, $page_number );
+			$this->process_options( 'archive', $cpppc_paged, $cpppc_options, $page_number );
 		} else {
-			$final_options = $this->process_options( 'default', $cpppc_paged, $cpppc_options, $page_number );
+			$this->process_options( 'default', $cpppc_paged, $cpppc_options, $page_number );
 		}
 
-		if ( isset( $final_options['posts'] ) ) {
-			$query->set( 'posts_per_page', $final_options['posts'] );
-			$query->set( 'offset', $final_options['offset'] );
+		if ( isset( $this->final_options['posts'] ) ) {
+			$query->set( 'posts_per_page', $this->final_options['posts'] );
+			$query->set( 'offset', $this->final_options['offset'] );
 		}
 
 		if ( 0 <> $this->page_count_offset )
@@ -453,20 +458,18 @@ class Custom_Posts_Per_Page_Foghlaim {
 	 * @param $cpppc_paged bool True if this is paged, false if it isn't.
 	 * @param $cpppc_options array of options from the database for custom posts per page
 	 * @param null $page_number int Which page is it?
-	 * @return array Contains the final values for posts_per_page and offset to be passed to the query
 	 */
 	public function process_options( $option_prefix, $cpppc_paged, $cpppc_options, $page_number = NULL ) {
-		$final_options = array();
 
 		if ( ! $cpppc_paged && ! empty( $cpppc_options[ $option_prefix . '_count' ] ) ) {
-			$final_options[ 'posts' ]  = $cpppc_options[ $option_prefix . '_count' ];
-			$final_options[ 'offset' ] = 0;
+			$this->final_options[ 'posts' ]  = $cpppc_options[ $option_prefix . '_count' ];
+			$this->final_options[ 'offset' ] = 0;
 		} elseif ( $cpppc_paged & ! empty( $cpppc_options[ $option_prefix . '_count_paged' ] ) ) {
 			$this->page_count_offset = ( $cpppc_options[ $option_prefix . '_count_paged' ] - $cpppc_options[ $option_prefix . '_count' ] );
-			$final_options[ 'offset' ]  = ( ( $page_number - 2 ) * $cpppc_options[ $option_prefix . '_count_paged' ] + $cpppc_options[ $option_prefix . '_count' ] );
-			$final_options[ 'posts' ]   = $cpppc_options[ $option_prefix . '_count_paged' ];
+			$this->final_options[ 'offset' ]  = ( ( $page_number - 2 ) * $cpppc_options[ $option_prefix . '_count_paged' ] + $cpppc_options[ $option_prefix . '_count' ] );
+			$this->final_options[ 'posts' ]   = $cpppc_options[ $option_prefix . '_count_paged' ];
 		}
-		return $final_options;
+
 	}
 }
 new Custom_Posts_Per_Page_Foghlaim();
