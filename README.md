@@ -1,18 +1,18 @@
 Custom Posts Per Page
 ====================
 
-Contributors: jeremyfelt
-Donate link: http://www.jeremyfelt.com/wordpress/plugins/custom-posts-per-page/
-Tags: admin, administration, settings, archives, posts-per-page, paged, posts, count, number, custom-post-type
-Requires at least: 3.1
-Tested up to: 3.4
-Stable tag: 1.5
+* Contributors: jeremyfelt
+* Donate link: http://jeremyfelt.com/wordpress/plugins/custom-posts-per-page/
+* Tags: admin, administration, settings, archives, posts-per-page, paged, posts, count, number, custom-post-type
+* Requires at least: 3.1
+* Tested up to: 3.4
+* Stable tag: 1.6
 
 Custom Posts Per Page provides a settings page in your WordPress admin that allows you to specify how many posts are displayed for different views.
 
 Description
 --------------
-Custom Posts Per Page allows you to specify how many posts are displayed per page depending on your current view. Once settings are changed, the *Blog pages show at most* setting in the *Reading* menu will ignored.
+Custom Posts Per Page allows you to specify how many posts are displayed per page depending on your current view. Once settings are changed, the *Blog pages show at most* setting in the *Reading* menu will be ignored.
 
 Settings are available for:
 
@@ -57,6 +57,11 @@ Screenshots
 
 Changelog
 ----------
+= 1.6 =
+* General code cleanup, more documentation
+* Move final_options into a private property for easy passing around the plugin
+* Much improved logic for handling the expected page count based on found posts. Should resolve any issues found when using plugins such as WP-PageNavi to show number of pages in navigation.
+
 = 1.5 =
 * A bunch of code cleanup. Move everything to a class.
 * Cleanup text domain stuff in preparation for a new translation (sweet!)
@@ -114,6 +119,14 @@ Changelog
 
 Upgrade Notice
 ---------------
+= 1.6 =
+
+* Fixes issues of wrongly reported page numbering when using WP-PageNavi or other paged navigation plugins that rely on WordPress's page count.
+
+= 1.4 =
+
+* Fixes issues where queries in sidebars were affected. My bad.
+
 = 1.3 =
 
 * Adds awesome support for paged views.
