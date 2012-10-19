@@ -29,19 +29,34 @@ License: GPL2
 
 class Custom_Posts_Per_Page_Foghlaim {
 
+	/**
+	 * When our first page has a different count than subsequent pages, we need to make
+	 * sure the offset value is selected in order for the query to be as aware as us.
+	 *
+	 * @var int contains the offset to pass to the query
+	 */
 	private $page_count_offset = 0;
 
 	/**
-	 * @var array contains the option data for our query that we may need to share across methods
+	 * We'll want to share some data about the final determinations we've made concerning
+	 * the page view amongst methods. This is a good a container as any for it.
+	 *
+	 * @var array containing option data
 	 */
 	private $final_options = array();
 
 	/**
+	 * If we're on page 1, this will always be false. But if we do land on a page 2 or more,
+	 * we'll be rocking true and can use that info.
+	 *
 	 * @var bool indication of whether a paged view has been requested
 	 */
 	private $paged_view = false;
 
 	/**
+	 * If we're on page 1 of a big view, WordPress will give us 0. But it will report 2 and
+	 * above, so we should be aware.
+	 *
 	 * @var int containing the currently viewed page number
 	 */
 	private $page_number = 1;
@@ -55,11 +70,14 @@ class Custom_Posts_Per_Page_Foghlaim {
 	public function __construct() {
 		register_activation_hook( __FILE__, array( $this, 'upgrade_check' ) );
 
+		add_filter( 'plugin_action_links', array( $this, 'add_plugin_action_links' ), 10, 2 );
+
 		add_action( 'admin_init', array( $this, 'upgrade_check' ) );
-		add_action( 'admin_menu', array( $this, 'add_settings' ) );
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
 		add_action( 'admin_init', array( $this, 'add_languages' ) );
-		add_filter( 'plugin_action_links', array( $this, 'add_plugin_action_links' ), 10, 2 );
+
+		add_action( 'admin_menu', array( $this, 'add_settings' ) );
+
 		add_filter( 'found_posts', array( $this, 'correct_found_posts' ) );
 
 		if ( ! is_admin() )
@@ -67,7 +85,7 @@ class Custom_Posts_Per_Page_Foghlaim {
 	}
 
 	/**
-	 * Load our language information
+	 * Load the custom-posts-per-page text domain for internationalization
 	 */
 	public function add_languages() {
 		load_plugin_textdomain( 'custom-posts-per-page', false, basename( dirname( __FILE__ ) ) . '/lang' );
@@ -80,7 +98,7 @@ class Custom_Posts_Per_Page_Foghlaim {
 	 * cleanup is needed if we detect and old version.
 	 */
 	public function upgrade_check() {
-		if ( '1.3' == get_option( 'cpppc_upgrade', '1.3' ) ) {
+		if ( '1.3' === get_option( 'cpppc_upgrade', '1.3' ) ) {
 			$this->activate();
 
 			$cpppc_options = get_option( 'cpppc_options' );
@@ -169,7 +187,7 @@ class Custom_Posts_Per_Page_Foghlaim {
 	}
 
 	/**
-	 * Add the settings page for Custom Posts Per Page under the settings menu.
+	 * Add the settings page for Posts Per Page under the settings menu.
 	 */
 	public function add_settings() {
 		add_options_page( __( 'Posts Per Page', 'custom-posts-per-page' ), __( 'Posts Per Page', 'custom-posts-per-page' ), 'manage_options', 'post-count-settings', array( $this, 'view_settings' ) );
@@ -190,14 +208,14 @@ class Custom_Posts_Per_Page_Foghlaim {
 			can be set for any other pages not covered by this.', 'custom-posts-per-page' ); ?></p>
 			<p style="margin-left:12px;max-width:640px;"><?php _e( 'The initial value used on activation was pulled from the setting <em>Blog Pages show at most</em> found in the', 'custom-posts-per-page' ); ?> <a href="<?php echo site_url( '/wp-admin/options-reading.php' ); ?>" title="Reading Settings"><?php _e( 'Reading Settings', 'custom-posts-per-page' ); ?></a></p>
 			<form method="post" action="options.php">
-	<?php
-		settings_fields( 'cpppc_options' );
-		do_settings_sections( 'cpppc' );
-		do_settings_sections( 'cpppc_custom' );
-	?>
-		<p class="submit"><input type="submit" class="button-primary" value="<?php _e( 'Save Changes', 'custom-posts-per-page' ); ?>" /></p></form>
+				<?php
+					settings_fields( 'cpppc_options' );
+					do_settings_sections( 'cpppc' );
+					do_settings_sections( 'cpppc_custom' );
+				?>
+			<p class="submit"><input type="submit" class="button-primary" value="<?php _e( 'Save Changes', 'custom-posts-per-page' ); ?>" /></p></form>
 		</div>
-	<?php
+		<?php
 	}
 
 	/**
@@ -235,7 +253,7 @@ class Custom_Posts_Per_Page_Foghlaim {
 	 * Output the main section of text.
 	 */
 	public function output_main_section_text() {
-	?>
+		?>
 		<h3><?php _e( 'Main Settings', 'custom-posts-per-page' ); ?></h3>
 		<p style="max-width:640px;margin-left:12px;"><?php _e( 'This section allows you to modify page view types that are
 		associated with WordPress by default. When an option is set to 0, it will not modify any page requests for
@@ -243,20 +261,20 @@ class Custom_Posts_Per_Page_Foghlaim {
 		<p style="max-width:460px;margin-left:12px;"><strong><?php _e( 'Please Note', 'custom-posts-per-page' ); ?>:</strong>
 		<em><?php _e( 'For each setting, the box on the <strong>LEFT</strong> controls the the number of posts displayed on	the first page of that view while
 		the box on the <strong>RIGHT</strong> controls the number of posts seen on pages 2, 3, 4, etc... of that view.', 'custom-posts-per-page' ); ?></em></p>
-	<?php
+		<?php
 	}
 
 	/**
 	 * Output the custom post type section of text.
 	 */
 	public function output_custom_section_text() {
-	?>
-	<h3><?php _e( 'Custom Post Type Specific Settings', 'custom-posts-per-page' ); ?></h3>
-	<p style="max-width:640px;margin-left:12px;"><?php _e( 'This section contains a list of all of your registered custom post
-	types. In order to not conflict with other plugins or themes, these are set to 0 by default. When an option is
-	set to 0, it will not modify any page requests for that custom post type archive. For Custom Posts Per Page to
-	control the number of posts to display, these will need to be changed.', 'custom-post-per-page' ); ?></p>
-	<?php
+		?>
+		<h3><?php _e( 'Custom Post Type Specific Settings', 'custom-posts-per-page' ); ?></h3>
+		<p style="max-width:640px;margin-left:12px;"><?php _e( 'This section contains a list of all of your registered custom post
+		types. In order to not conflict with other plugins or themes, these are set to 0 by default. When an option is
+		set to 0, it will not modify any page requests for that custom post type archive. For Custom Posts Per Page to
+		control the number of posts to display, these will need to be changed.', 'custom-post-per-page' ); ?></p>
+		<?php
 	}
 
 	/**
@@ -282,14 +300,14 @@ class Custom_Posts_Per_Page_Foghlaim {
 
 			$this_post_data = get_post_type_object( $p );
 
-		?>
+			?>
 			<tr>
 				<td><?php echo $this_post_data->labels->name; ?></td>
 				<td><input id="cpppc_post_type_count[<?php echo $p; ?>]" name="cpppc_options[<?php echo $p; ?>_count]" size="10" type="text" value="<?php echo esc_attr( $cpppc_options[ $p . '_count' ] ); ?>" />
 					&nbsp;<input id="cpppc_post_type_count[<?php echo $p; ?>]" name="cpppc_options[<?php echo $p; ?>_count_paged]" size="10" type="text" value="<?php echo esc_attr( $cpppc_options[ $p . '_count_paged' ] ); ?>" />
 				</td>
 			</tr>
-		<?php
+			<?php
 		}
 	}
 
@@ -298,10 +316,11 @@ class Custom_Posts_Per_Page_Foghlaim {
 	 */
 	public function output_index_count_text() {
 		$cpppc_options = get_option( 'cpppc_options', array( 'front_count' => 0, 'front_count_paged' => 0 ) );
-	?>
+
+		?>
 		<input id="cpppc_index_count[0]" name="cpppc_options[front_count]" size="10" type="text" value="<?php echo esc_attr( $cpppc_options[ 'front_count' ] ); ?>" />
 		&nbsp;<input id="cpppc_index_count[1]" name="cpppc_options[front_count_paged]" size="10" type="text" value="<?php echo esc_attr( $cpppc_options[ 'front_count_paged' ] ); ?>" />
-	<?php
+		<?php
 	}
 
 	/**
@@ -309,10 +328,11 @@ class Custom_Posts_Per_Page_Foghlaim {
 	 */
 	public function output_category_count_text() {
 		$cpppc_options = get_option( 'cpppc_options', array( 'category_count' => 0, 'category_count_paged' => 0 ) );
-	?>
+
+		?>
 		<input id="cppppc_category_count[0]" name="cpppc_options[category_count]" size="10" type="text" value="<?php echo esc_attr( $cpppc_options[ 'category_count' ] ); ?>" />
 		&nbsp;<input id="cppppc_category_count[1]" name="cpppc_options[category_count_paged]" size="10" type="text" value="<?php echo esc_attr( $cpppc_options[ 'category_count_paged' ] ); ?>" />
-	<?php
+		<?php
 	}
 
 	/**
@@ -320,10 +340,11 @@ class Custom_Posts_Per_Page_Foghlaim {
 	 */
 	public function output_archive_count_text() {
 		$cpppc_options = get_option( 'cpppc_options', array( 'archive_count' => 0, 'archive_count_paged' => 0 ) );
-	?>
+
+		?>
 		<input id="cppppc_archive_count[0]" name="cpppc_options[archive_count]" size="10" type="text" value="<?php echo esc_attr( $cpppc_options[ 'archive_count' ] ); ?>" />
 		&nbsp;<input id="cppppc_archive_count[1]" name="cpppc_options[archive_count_paged]" size="10" type="text" value="<?php echo esc_attr( $cpppc_options[ 'archive_count_paged' ] ); ?>" />
-	<?php
+		<?php
 	}
 
 	/**
@@ -331,10 +352,11 @@ class Custom_Posts_Per_Page_Foghlaim {
 	 */
 	public function output_tag_count_text() {
 		$cpppc_options = get_option( 'cpppc_options', array( 'tag_count' => 0, 'tag_count_paged' => 0 ) );
-	?>
+
+		?>
 		<input id="cpppc_tag_count[0]" name="cpppc_options[tag_count]" size="10" type="text" value="<?php echo esc_attr( $cpppc_options[ 'tag_count' ] ); ?>" />
 		&nbsp;<input id="cpppc_tag_count[1]" name="cpppc_options[tag_count_paged]" size="10" type="text" value="<?php echo esc_attr( $cpppc_options[ 'tag_count_paged' ] ); ?>" />
-	<?php
+		<?php
 	}
 
 	/**
@@ -342,10 +364,11 @@ class Custom_Posts_Per_Page_Foghlaim {
 	 */
 	public function output_author_count_text() {
 		$cpppc_options = get_option( 'cpppc_options', array( 'author_count' => 0, 'author_count_paged' => 0 ) );
-	?>
+
+		?>
 		<input id="cpppc_author_count[0]" name="cpppc_options[author_count]" size="10" type="text" value="<?php echo esc_attr( $cpppc_options[ 'author_count' ] ); ?>" />
 		&nbsp;<input id="cpppc_author_count[1]" name="cpppc_options[author_count_paged]" size="10" type="text" value="<?php echo esc_attr( $cpppc_options[ 'author_count_paged' ] ); ?>" />
-	<?php
+		<?php
 	}
 
 	/**
@@ -353,10 +376,11 @@ class Custom_Posts_Per_Page_Foghlaim {
 	 */
 	public function output_search_count_text() {
 		$cpppc_options = get_option( 'cpppc_options', array( 'search_count' => 0, 'search_count_paged' => 0 ) );
-	?>
+
+		?>
 		<input id="cppppc_search_count[0]" name="cpppc_options[search_count]" size="10" type="text" value="<?php echo esc_attr( $cpppc_options[ 'search_count' ] ); ?>" />
 		&nbsp;<input id="cppppc_search_count[1]" name="cpppc_options[search_count_paged]" size="10" type="text" value="<?php echo esc_attr( $cpppc_options[ 'search_count_paged' ] ); ?>" />
-	<?php
+		<?php
 	}
 
 	/**
@@ -364,10 +388,11 @@ class Custom_Posts_Per_Page_Foghlaim {
 	 */
 	public function output_default_count_text() {
 		$cpppc_options = get_option( 'cpppc_options', array( 'default_count' => 0, 'default_count_paged' => 0 ) );
-	?>
+
+		?>
 		<input id="cppppc_default_count[0]" name="cpppc_options[default_count]" size="10" type="text" value="<?php echo esc_attr( $cpppc_options[ 'default_count' ] ); ?>" />
 		&nbsp;<input id="cppppc_default_count[1]" name="cpppc_options[default_count_paged]" size="10" type="text" value="<?php echo esc_attr( $cpppc_options[ 'default_count_paged' ] ); ?>" />
-	<?php
+		<?php
 	}
 
 	/**
@@ -407,7 +432,6 @@ class Custom_Posts_Per_Page_Foghlaim {
 			$post_type_array[] = $p;
 		}
 
-		/*  Set our own page flag for our own sanity. */
 		$this->paged_view = ( $query->get( 'paged' ) && 2 <= $query->get( 'paged' ) ) ? true : false;
 		$this->page_number = $query->get( 'paged' );
 
@@ -453,41 +477,41 @@ class Custom_Posts_Per_Page_Foghlaim {
 
 	/**
 	 * The offset and post count deal gets a bit confused when the first page and subsequent pages stop matching.
-	 * This function helps realign things once we've screwed with them.
+	 * This function helps realign things once we've screwed with them by doing some math to determine how many
+	 * posts we need to return to the query in order for core to calculate the correct number of pages required.
 	 *
 	 * @param $found_posts int The number of found posts
 	 * @return mixed The number of posts to report as found for real
 	 */
 	public function correct_found_posts( $found_posts ) {
-		// old return value
-		//return ( $found_posts + $this->page_count_offset );
 
+		// We don't have the same issues if our first page and paged counts are the same as the math is easy then
 		if ( $this->final_options['set_count'] == $this->final_options['set_count_paged'] )
 			return $found_posts;
 
-		//var_dump( $this->final_options );
-		//die();
-
-		//var_dump( $this->page_number, $this->paged_view, $this->final_options );
-		//die();
+		// Do the true calculation for pages required based on both
+		// values: page 1 posts count and subsequent page post counts
+		$pages_required = ( ( ( $found_posts - $this->final_options['set_count'] ) / $this->final_options['set_count_paged'] ) + 1 );
 
 		if ( 0 === $this->page_number )
-			return ( ( ( $found_posts - $this->final_options['set_count'] ) / $this->final_options['set_count_paged'] ) + 1 ) * $this->final_options['set_count'];
+			return $pages_required * $this->final_options['set_count'];
 
 		if ( 1 < $this->page_number )
-			return ( ( ( $found_posts - $this->final_options['set_count'] ) / $this->final_options['set_count_paged'] ) + 1 ) * $this->final_options['set_count_paged'];
+			return $pages_required * $this->final_options['set_count_paged'];
 
 		return $found_posts;
 	}
 
 	/**
-	 * @param $option_prefix string The prefix of the count and count_paged options in the database
-	 * @param $cpppc_paged bool True if this is paged, false if it isn't.
+	 * We use this function to abstract the processing of options while we determine what
+	 * type of view we're working with and what to use for the count on the initial page
+	 * and subsequent pages. The options are stored in a private property that allows us
+	 * access throughout the class after this.
+	 *
+	 * @param $option_prefix string prefix of the count and count_paged options in the database
 	 * @param $cpppc_options array of options from the database for custom posts per page
-	 * @param null $page_number int Which page is it?
 	 */
 	public function process_options( $option_prefix, $cpppc_options ) {
-
 		if ( ! $this->paged_view && ! empty( $cpppc_options[ $option_prefix . '_count' ] ) ) {
 			$this->final_options[ 'posts' ]  = $cpppc_options[ $option_prefix . '_count' ];
 			$this->final_options[ 'offset' ] = 0;
@@ -500,7 +524,6 @@ class Custom_Posts_Per_Page_Foghlaim {
 			$this->final_options['set_count'] = $cpppc_options[ $option_prefix . '_count' ];
 			$this->final_options['set_count_paged'] = $cpppc_options[ $option_prefix . '_count_paged' ];
 		}
-
 	}
 }
 new Custom_Posts_Per_Page_Foghlaim();
