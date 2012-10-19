@@ -37,6 +37,16 @@ class Custom_Posts_Per_Page_Foghlaim {
 	private $final_options = array();
 
 	/**
+	 * @var bool indication of whether a paged view has been requested
+	 */
+	private $paged_view = false;
+
+	/**
+	 * @var int containing the currently viewed page number
+	 */
+	private $page_number = 1;
+
+	/**
 	 * Start up the plugin by adding appropriate actions and filters.
 	 *
 	 * Our pre_get_posts action should only happen on non admin screens
@@ -397,11 +407,11 @@ class Custom_Posts_Per_Page_Foghlaim {
 		}
 
 		/*  Set our own page flag for our own sanity. */
-		$cpppc_paged = ( $query->get( 'paged' ) && 2 <= $query->get( 'paged' ) ) ? true : false;
-		$page_number = $query->get( 'paged' );
+		$this->paged_view = ( $query->get( 'paged' ) && 2 <= $query->get( 'paged' ) ) ? true : false;
+		$this->page_number = $query->get( 'paged' );
 
 		if ( $query->is_home() ) {
-			$this->process_options( 'front', $cpppc_paged, $cpppc_options, $page_number );
+			$this->process_options( 'front', $cpppc_options );
 		} elseif ( $query->is_post_type_archive( $post_type_array ) ) {
 			/*	We've just established that the visitor is loading an archive page of a custom post type by matching
 			 *  it to a general array. Now we'll loop back through until we find exactly what post type is matching
@@ -416,21 +426,21 @@ class Custom_Posts_Per_Page_Foghlaim {
 			 *  post types available to us at the time are assigned options. If a new custom post type has been
 			 *  installed, it's possible it does not yet have an option. For now we'll skip the request modification
 			 *  and let it slide by if there is no match. */
-			$this->process_options( $my_post_type_option, $cpppc_paged, $cpppc_options, $page_number );
+			$this->process_options( $my_post_type_option, $cpppc_options );
 		} elseif ( $query->is_category() ) {
-			$this->process_options( 'category', $cpppc_paged, $cpppc_options, $page_number );
+			$this->process_options( 'category', $cpppc_options );
 		} elseif ( $query->is_tag() ) {
-			$this->process_options( 'tag', $cpppc_paged, $cpppc_options, $page_number );
+			$this->process_options( 'tag', $cpppc_options );
 		} elseif ( $query->is_author() ) {
-			$this->process_options( 'author', $cpppc_paged, $cpppc_options, $page_number );
+			$this->process_options( 'author', $cpppc_options );
 		} elseif ( $query->is_search() ) {
-			$this->process_options( 'search', $cpppc_paged, $cpppc_options, $page_number );
+			$this->process_options( 'search', $cpppc_options );
 		} elseif ( $query->is_archive() ) {
 			/*  Note that the check for is_archive needs to be below anything else that WordPress may consider an
 			 *  archive. This includes is_tag, is_category, is_author and probably some others.	*/
-			$this->process_options( 'archive', $cpppc_paged, $cpppc_options, $page_number );
+			$this->process_options( 'archive', $cpppc_options );
 		} else {
-			$this->process_options( 'default', $cpppc_paged, $cpppc_options, $page_number );
+			$this->process_options( 'default', $cpppc_options );
 		}
 
 		if ( isset( $this->final_options['posts'] ) ) {
@@ -450,6 +460,22 @@ class Custom_Posts_Per_Page_Foghlaim {
 	 * @return mixed The number of posts to report as found for real
 	 */
 	public function correct_found_posts( $found_posts ) {
+		// if page 1:
+		// ( ( ( found_posts - first_page_posts ) / posts_sub_page ) + 1 ) * first_page_post
+		// gets you the number of posts that should be reported so that page one returns a proper count
+
+		// if page 2:
+		// ( ( ( found_posts - first_page_posts ) / posts_sub_page ) + 1 ) * posts_sub_page
+		// gets you the number of posts that should be reported so that subsequent pages return a proper count
+
+		// I need first_page_posts, sub_pages_posts, if_paged, page_number
+
+		$found_posts;
+		$this->final_options['set_count'];
+		$this->final_options['set_count_paged'];
+		$this->paged_view;
+		$this->page_number;
+
 		return ( $found_posts + $this->page_count_offset );
 	}
 
@@ -459,15 +485,19 @@ class Custom_Posts_Per_Page_Foghlaim {
 	 * @param $cpppc_options array of options from the database for custom posts per page
 	 * @param null $page_number int Which page is it?
 	 */
-	public function process_options( $option_prefix, $cpppc_paged, $cpppc_options, $page_number = NULL ) {
+	public function process_options( $option_prefix, $cpppc_options ) {
 
-		if ( ! $cpppc_paged && ! empty( $cpppc_options[ $option_prefix . '_count' ] ) ) {
+		if ( ! $this->paged_view && ! empty( $cpppc_options[ $option_prefix . '_count' ] ) ) {
 			$this->final_options[ 'posts' ]  = $cpppc_options[ $option_prefix . '_count' ];
 			$this->final_options[ 'offset' ] = 0;
-		} elseif ( $cpppc_paged & ! empty( $cpppc_options[ $option_prefix . '_count_paged' ] ) ) {
+			$this->final_options['set_count'] = $cpppc_options[ $option_prefix . '_count' ];
+			$this->final_options['set_count_paged'] = $cpppc_options[ $option_prefix . '_count_paged' ];
+		} elseif ( $this->paged_view & ! empty( $cpppc_options[ $option_prefix . '_count_paged' ] ) ) {
 			$this->page_count_offset = ( $cpppc_options[ $option_prefix . '_count_paged' ] - $cpppc_options[ $option_prefix . '_count' ] );
-			$this->final_options[ 'offset' ]  = ( ( $page_number - 2 ) * $cpppc_options[ $option_prefix . '_count_paged' ] + $cpppc_options[ $option_prefix . '_count' ] );
+			$this->final_options[ 'offset' ]  = ( ( $this->page_number - 2 ) * $cpppc_options[ $option_prefix . '_count_paged' ] + $cpppc_options[ $option_prefix . '_count' ] );
 			$this->final_options[ 'posts' ]   = $cpppc_options[ $option_prefix . '_count_paged' ];
+			$this->final_options['set_count'] = $cpppc_options[ $option_prefix . '_count' ];
+			$this->final_options['set_count_paged'] = $cpppc_options[ $option_prefix . '_count_paged' ];
 		}
 
 	}
