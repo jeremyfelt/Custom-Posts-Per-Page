@@ -473,6 +473,9 @@ class Custom_Posts_Per_Page_Foghlaim {
 	 */
 	public function correct_found_posts( $found_posts ) {
 
+		if ( empty( $this->final_options['set_count'] ) || empty( $this->final_options['set_count_paged'] ) )
+			return $found_posts;
+
 		// We don't have the same issues if our first page and paged counts are the same as the math is easy then
 		if ( $this->final_options['set_count'] == $this->final_options['set_count_paged'] )
 			return $found_posts;
