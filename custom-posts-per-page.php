@@ -78,8 +78,6 @@ class Custom_Posts_Per_Page_Foghlaim {
 
 		add_action( 'admin_menu', array( $this, 'add_settings' ) );
 
-		add_filter( 'found_posts', array( $this, 'correct_found_posts' ) );
-
 		if ( ! is_admin() )
 			add_action( 'pre_get_posts', array( $this, 'modify_query' ) );
 	}
@@ -422,7 +420,7 @@ class Custom_Posts_Per_Page_Foghlaim {
 	public function modify_query( $query ) {
 
 		/*  If this isn't the main query, we'll avoid altering the results. */
-		if ( ! $this->check_main_query( $query ) )
+		if ( ! $this->check_main_query( $query ) || is_admin() )
 			return;
 
 		$cpppc_options   = get_option( 'cpppc_options' );
@@ -438,20 +436,8 @@ class Custom_Posts_Per_Page_Foghlaim {
 		if ( $query->is_home() ) {
 			$this->process_options( 'front', $cpppc_options );
 		} elseif ( $query->is_post_type_archive( $post_type_array ) ) {
-			/*	We've just established that the visitor is loading an archive page of a custom post type by matching
-			 *  it to a general array. Now we'll loop back through until we find exactly what post type is matching
-			 *  so we can modify the request accordingly. */
-			foreach ( $post_type_array as $my_post_type ) {
-				if ( $query->is_post_type_archive( $my_post_type ) ) {
-					/*	Now we know for sure what custom post type we're on. */
-					$my_post_type_option = $my_post_type;
-				}
-			}
-			/*	Now check to see if we've assigned a value to this yet. When our plugin is registered, only the custom
-			 *  post types available to us at the time are assigned options. If a new custom post type has been
-			 *  installed, it's possible it does not yet have an option. For now we'll skip the request modification
-			 *  and let it slide by if there is no match. */
-			$this->process_options( $my_post_type_option, $cpppc_options );
+			$current_post_type_object = $query->get_queried_object();
+			$this->process_options( $current_post_type_object->name, $cpppc_options );
 		} elseif ( $query->is_category() ) {
 			$this->process_options( 'category', $cpppc_options );
 		} elseif ( $query->is_tag() ) {
@@ -472,6 +458,8 @@ class Custom_Posts_Per_Page_Foghlaim {
 			$query->set( 'posts_per_page', $this->final_options['posts'] );
 			$query->set( 'offset', $this->final_options['offset'] );
 		}
+
+		add_filter( 'found_posts', array( $this, 'correct_found_posts' ) );
 
 	}
 
