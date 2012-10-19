@@ -60,6 +60,7 @@ class Custom_Posts_Per_Page_Foghlaim {
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
 		add_action( 'admin_init', array( $this, 'add_languages' ) );
 		add_filter( 'plugin_action_links', array( $this, 'add_plugin_action_links' ), 10, 2 );
+		add_filter( 'found_posts', array( $this, 'correct_found_posts' ) );
 
 		if ( ! is_admin() )
 			add_action( 'pre_get_posts', array( $this, 'modify_query' ) );
@@ -448,8 +449,6 @@ class Custom_Posts_Per_Page_Foghlaim {
 			$query->set( 'offset', $this->final_options['offset'] );
 		}
 
-		if ( 0 <> $this->page_count_offset )
-			add_filter( 'found_posts', array( $this, 'correct_found_posts' ) );
 	}
 
 	/**
@@ -466,7 +465,13 @@ class Custom_Posts_Per_Page_Foghlaim {
 		if ( $this->final_options['set_count'] == $this->final_options['set_count_paged'] )
 			return $found_posts;
 
-		if ( 1 === $this->page_number )
+		//var_dump( $this->final_options );
+		//die();
+
+		//var_dump( $this->page_number, $this->paged_view, $this->final_options );
+		//die();
+
+		if ( 0 === $this->page_number )
 			return ( ( ( $found_posts - $this->final_options['set_count'] ) / $this->final_options['set_count_paged'] ) + 1 ) * $this->final_options['set_count'];
 
 		if ( 1 < $this->page_number )
