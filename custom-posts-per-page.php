@@ -460,23 +460,19 @@ class Custom_Posts_Per_Page_Foghlaim {
 	 * @return mixed The number of posts to report as found for real
 	 */
 	public function correct_found_posts( $found_posts ) {
-		// if page 1:
-		// ( ( ( found_posts - first_page_posts ) / posts_sub_page ) + 1 ) * first_page_post
-		// gets you the number of posts that should be reported so that page one returns a proper count
+		// old return value
+		//return ( $found_posts + $this->page_count_offset );
 
-		// if page 2:
-		// ( ( ( found_posts - first_page_posts ) / posts_sub_page ) + 1 ) * posts_sub_page
-		// gets you the number of posts that should be reported so that subsequent pages return a proper count
+		if ( $this->final_options['set_count'] == $this->final_options['set_count_paged'] )
+			return $found_posts;
 
-		// I need first_page_posts, sub_pages_posts, if_paged, page_number
+		if ( 1 === $this->page_number )
+			return ( ( ( $found_posts - $this->final_options['set_count'] ) / $this->final_options['set_count_paged'] ) + 1 ) * $this->final_options['set_count'];
 
-		$found_posts;
-		$this->final_options['set_count'];
-		$this->final_options['set_count_paged'];
-		$this->paged_view;
-		$this->page_number;
+		if ( 1 < $this->page_number )
+			return ( ( ( $found_posts - $this->final_options['set_count'] ) / $this->final_options['set_count_paged'] ) + 1 ) * $this->final_options['set_count_paged'];
 
-		return ( $found_posts + $this->page_count_offset );
+		return $found_posts;
 	}
 
 	/**
