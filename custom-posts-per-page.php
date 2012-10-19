@@ -1,17 +1,17 @@
 <?php
 /*
 Plugin Name: Custom Posts Per Page
-Plugin URI: http://www.jeremyfelt.com/wordpress/plugins/custom-posts-per-page/
+Plugin URI: http://jeremyfelt.com/wordpress/plugins/custom-posts-per-page/
 Description: Shows a custom set number of posts depending on the type of page being viewed.
 Version: 1.5
 Author: Jeremy Felt
-Author URI: http://www.jeremyfelt.com
+Author URI: http://jeremyfelt.com
 Text Domain: custom-posts-per-page
 Domain Path: /lang
 License: GPL2
 */
 
-/*  Copyright 2011 Jeremy Felt (email: jeremy.felt@gmail.com)
+/*  Copyright 2011-2012 Jeremy Felt (email: jeremy.felt@gmail.com)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License, version 2, as
@@ -69,14 +69,14 @@ class Custom_Posts_Per_Page_Foghlaim {
 
 			$cpppc_options = get_option( 'cpppc_options' );
 
-			if ( isset( $cpppc_options[ 'front_page_count' ] ) ) {
-				$cpppc_options[ 'front_count' ] = $cpppc_options[ 'front_page_count' ];
-				unset( $cpppc_options[ 'front_page_count' ] );
+			if ( isset( $cpppc_options['front_page_count'] ) ) {
+				$cpppc_options['front_count'] = $cpppc_options['front_page_count'];
+				unset( $cpppc_options['front_page_count'] );
 			}
 
-			if ( isset( $cpppc_options[ 'index_count' ] ) ) {
-				$cpppc_options[ 'front_count_paged' ] = $cpppc_options[ 'index_count' ];
-				unset( $cpppc_options[ 'index_count' ] );
+			if ( isset( $cpppc_options['index_count'] ) ) {
+				$cpppc_options['front_count_paged'] = $cpppc_options['index_count'];
+				unset( $cpppc_options['index_count'] );
 			}
 
 			update_option( 'cpppc_options', $cpppc_options );
@@ -428,9 +428,9 @@ class Custom_Posts_Per_Page_Foghlaim {
 			$final_options = $this->process_options( 'default', $cpppc_paged, $cpppc_options, $page_number );
 		}
 
-		if ( isset( $final_options[ 'posts' ] ) ) {
-			$query->set( 'posts_per_page', $final_options[ 'posts' ] );
-			$query->set( 'offset', $final_options[ 'offset' ] );
+		if ( isset( $final_options['posts'] ) ) {
+			$query->set( 'posts_per_page', $final_options['posts'] );
+			$query->set( 'offset', $final_options['offset'] );
 		}
 
 		if ( 0 <> $this->page_count_offset )
