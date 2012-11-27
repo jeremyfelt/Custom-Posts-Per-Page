@@ -48,11 +48,7 @@ Frequently Asked Questions
 
 ### Should I keep using WordPress 3.2.1?
 
-* No. I'm being nice for now, but when 3.5 comes out, I'm totally removing the last piece of code that ties this plugin to 3.2.1. Sorry. :)
-
-### Why aren't there any FAQs?
-
-*  Because nobody has asked a question yet.
+* No. The next release of this plugin, version 1.8, will *not* support WordPress 3.2.1.
 
 Screenshots
 --------------
