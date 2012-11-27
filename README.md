@@ -42,6 +42,10 @@ That's it! The current setting for *Blog pages show at most* under *Reading* wil
 
 Frequently Asked Questions
 ----------------------------
+### What are you doing with found_posts?
+
+* An issue was appearing in plugins that assisted with pagination when the setting for posts per page was different from subsequent pages. To resolve this issue, we do some math and return an incorrect found_posts value when that scenario occurs. This doesn't affect any core WordPress functionality, but could confuse other plugins that are looking for a correct value. I wouldn't worry about this much, but keep it in mind if you are seeing issues *and* have two different values entered as described.
+
 ### Should I keep using WordPress 3.2.1?
 
 * No. I'm being nice for now, but when 3.5 comes out, I'm totally removing the last piece of code that ties this plugin to 3.2.1. Sorry. :)

@@ -468,6 +468,10 @@ class Custom_Posts_Per_Page_Foghlaim {
 	 * This function helps realign things once we've screwed with them by doing some math to determine how many
 	 * posts we need to return to the query in order for core to calculate the correct number of pages required.
 	 *
+	 * It should be noted here that found_posts is modified if the value of posts per page is different for page 1
+	 * than subsequent pages. This is intended to resolve pagination issues in popular WordPress plugins, but can
+	 * possibly cause related issues for other things that are depending on an exact found posts value.
+	 *
 	 * @param $found_posts int The number of found posts
 	 * @return mixed The number of posts to report as found for real
 	 */
@@ -477,7 +481,7 @@ class Custom_Posts_Per_Page_Foghlaim {
 			return $found_posts;
 
 		// We don't have the same issues if our first page and paged counts are the same as the math is easy then
-		if ( $this->final_options['set_count'] == $this->final_options['set_count_paged'] )
+		if ( $this->final_options['set_count'] === $this->final_options['set_count_paged'] )
 			return $found_posts;
 
 		// Do the true calculation for pages required based on both
