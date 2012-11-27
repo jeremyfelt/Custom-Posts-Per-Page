@@ -221,15 +221,18 @@ class Custom_Posts_Per_Page_Foghlaim {
 	 */
 	public function register_settings() {
 		register_setting( 'cpppc_options', 'cpppc_options', array( $this, 'validate_options' ) );
+
 		add_settings_section( 'cpppc_section_main', '', array( $this, 'output_main_section_text' ), 'cpppc' );
 		add_settings_section( 'cpppc_section_custom', '', array( $this, 'output_custom_section_text' ), 'cpppc_custom' );
-		add_settings_field( 'cpppc_index_count', __( 'Main Index posts per page:', 'custom-posts-per-page' ), array( $this, 'output_index_count_text' ), 'cpppc', 'cpppc_section_main' );
-		add_settings_field( 'cpppc_category_count', __( 'Category posts per page:', 'custom-posts-per-page' ), array( $this, 'output_category_count_text' ), 'cpppc', 'cpppc_section_main' );
-		add_settings_field( 'cpppc_archive_count', __( 'Archive posts per page:', 'custom-posts-per-page' ), array( $this, 'output_archive_count_text' ), 'cpppc', 'cpppc_section_main' );
-		add_settings_field( 'cpppc_tag_count', __( 'Tag posts per page:', 'custom-posts-per-page' ), array( $this, 'output_tag_count_text' ), 'cpppc', 'cpppc_section_main' );
-		add_settings_field( 'cpppc_author_count', __( 'Author posts per page:', 'custom-posts-per-page' ), array( $this, 'output_author_count_text' ), 'cpppc', 'cpppc_section_main' );
-		add_settings_field( 'cpppc_search_count', __( 'Search posts per page:', 'custom-posts-per-page' ), array( $this, 'output_search_count_text' ), 'cpppc', 'cpppc_section_main' );
-		add_settings_field( 'cpppc_default_count', __( 'Default posts per page:', 'custom-posts-per-page' ), array( $this, 'output_default_count_text' ), 'cpppc', 'cpppc_section_main' );
+
+		add_settings_field( 'cpppc_index_count',     __( 'Main Index posts per page:', 'custom-posts-per-page' ), array( $this, 'output_index_count_text' ),    'cpppc', 'cpppc_section_main' );
+		add_settings_field( 'cpppc_category_count',  __( 'Category posts per page:', 'custom-posts-per-page' ),   array( $this, 'output_category_count_text' ), 'cpppc', 'cpppc_section_main' );
+		add_settings_field( 'cpppc_archive_count',   __( 'Archive posts per page:', 'custom-posts-per-page' ),    array( $this, 'output_archive_count_text' ),  'cpppc', 'cpppc_section_main' );
+		add_settings_field( 'cpppc_tag_count',       __( 'Tag posts per page:', 'custom-posts-per-page' ),        array( $this, 'output_tag_count_text' ),      'cpppc', 'cpppc_section_main' );
+		add_settings_field( 'cpppc_author_count',    __( 'Author posts per page:', 'custom-posts-per-page' ),     array( $this, 'output_author_count_text' ),   'cpppc', 'cpppc_section_main' );
+		add_settings_field( 'cpppc_search_count',    __( 'Search posts per page:', 'custom-posts-per-page' ),     array( $this, 'output_search_count_text' ),   'cpppc', 'cpppc_section_main' );
+		add_settings_field( 'cpppc_default_count',   __( 'Default posts per page:', 'custom-posts-per-page' ),    array( $this, 'output_default_count_text' ),  'cpppc', 'cpppc_section_main' );
+
 		add_settings_field( 'cpppc_post_type_count', '', array( $this, 'output_post_type_count_text' ), 'cpppc_custom', 'cpppc_section_custom' );
 	}
 
