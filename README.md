@@ -4,7 +4,7 @@ Custom Posts Per Page
 * Contributors: jeremyfelt
 * Donate link: http://jeremyfelt.com/wordpress/plugins/custom-posts-per-page/
 * Tags: admin, administration, settings, archives, posts-per-page, paged, posts, count, number, custom-post-type
-* Requires at least: 3.3
+* Requires at least: 4.0
 * Tested up to: 4.1
 * Stable tag: 1.7.1
 
@@ -62,6 +62,7 @@ Changelog
 * Switch to semantic versioning. :)
 * Code cleanup, compatibility testing with 4.1.
 * Add some extra sanitization, escaping.
+* Remove backwards compatible `is_main_query()` check. Use WordPress 4.0 or greater.
 
 ### 1.7
 * Update documentation, compatibility testing with 3.5.
