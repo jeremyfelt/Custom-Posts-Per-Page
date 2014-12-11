@@ -404,23 +404,6 @@ class Custom_Posts_Per_Page_Foghlaim {
 	}
 
 	/**
-	 * Backwards compatible (3.2.1) function to check for main query. In an ideal world, we'd
-	 * tell you to buzz off and upgrade to at least 3.3.1, let alone the 3.4 that's just around
-	 * the corner... but I'll be nice for one more release. Then I get to remove 15 lines. :)
-	 *
-	 * @param $query object WP Query object
-	 * @return bool Whether or not this is the main query
-	 */
-	public function check_main_query( $query ) {
-		if ( method_exists( $query, 'is_main_query' ) ) {
-			return $query->is_main_query();
-		} else {
-			global $wp_the_query;
-			return $query === $wp_the_query;
-		}
-	}
-
-	/**
 	 * This is the important part of the plugin that actually modifies the query before anything
 	 * is displayed.
 	 *
@@ -430,7 +413,7 @@ class Custom_Posts_Per_Page_Foghlaim {
 	public function modify_query( $query ) {
 
 		/*  If this isn't the main query, we'll avoid altering the results. */
-		if ( ! $this->check_main_query( $query ) || is_admin() ) {
+		if ( ! $query->is_main_query() || is_admin() ) {
 			return;
 		}
 
