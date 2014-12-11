@@ -1,17 +1,17 @@
 <?php
 /*
 Plugin Name: Custom Posts Per Page
-Plugin URI: http://jeremyfelt.com/wordpress/plugins/custom-posts-per-page/
+Plugin URI: https://jeremyfelt.com/wordpress/plugins/custom-posts-per-page/
 Description: Shows a custom set number of posts depending on the type of page being viewed.
-Version: 1.7
+Version: 1.7.1
 Author: Jeremy Felt
-Author URI: http://jeremyfelt.com
+Author URI: https://jeremyfelt.com
 Text Domain: custom-posts-per-page
 Domain Path: /lang
 License: GPL2
 */
 
-/*  Copyright 2011-2012 Jeremy Felt (email: jeremy.felt@gmail.com)
+/*  Copyright 2011-2014 Jeremy Felt (email: jeremy.felt@gmail.com)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License, version 2, as
