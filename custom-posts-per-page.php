@@ -78,8 +78,9 @@ class Custom_Posts_Per_Page_Foghlaim {
 
 		add_action( 'admin_menu', array( $this, 'add_settings' ) );
 
-		if ( ! is_admin() )
+		if ( ! is_admin() ) {
 			add_action( 'pre_get_posts', array( $this, 'modify_query' ) );
+		}
 	}
 
 	/**
@@ -130,16 +131,17 @@ class Custom_Posts_Per_Page_Foghlaim {
 		$option_type_array = array( 'front', 'category', 'tag', 'author', 'archive', 'search', 'default' );
 
 		foreach ( $option_type_array as $option_type ) {
-			$default_options[ $option_type . '_count' ] = $default_count;
+			$default_options[ $option_type . '_count' ] = absint( $default_count );
 
 			/* For some users that are upgrading from a past version, we want to make sure the paged count
 			 * is filled in with something appropriate. This looks for each option in order. */
-			if ( ! empty( $cppc_options[ $option_type . '_count_paged' ] ) )
-				$default_options[ $option_type . '_count_paged' ] = $current_options[ $option_type . '_count_paged' ];
-			elseif ( ! empty( $cpppc_options[ $option_type . '_count' ] ) )
-				$default_options[ $option_type . '_count_paged' ] = $current_options[ $option_type . '_count' ];
-			else
-				$default_options[ $option_type . '_count_paged' ] = $default_count;
+			if ( ! empty( $cppc_options[ $option_type . '_count_paged' ] ) ) {
+				$default_options[ $option_type . '_count_paged' ] = absint( $current_options[ $option_type . '_count_paged' ] );
+			} elseif ( ! empty( $cpppc_options[ $option_type . '_count' ] ) ) {
+				$default_options[ $option_type . '_count_paged' ] = absint( $current_options[ $option_type . '_count' ] );
+			} else {
+				$default_options[ $option_type . '_count_paged' ] = absint( $default_count );
+			}
 		}
 
 		/*  We'll also get all of the currently registered custom post types and give them a default value
@@ -148,15 +150,17 @@ class Custom_Posts_Per_Page_Foghlaim {
 		 *  by the user. */
 		$all_post_types = get_post_types( array( '_builtin' => false ) );
 		foreach ( $all_post_types as $p => $k ) {
-			if ( isset( $current_options[ $p . '_count' ] ) )
-				$default_options[ $p . '_count' ] = $current_options[ $p . '_count' ];
-			else
+			if ( isset( $current_options[ $p . '_count' ] ) ) {
+				$default_options[ $p . '_count' ] = absint( $current_options[ $p . '_count' ] );
+			} else {
 				$default_options[ $p . '_count' ] = 0;
+			}
 
-			if ( isset( $current_options[ $p . '_count_paged' ] ) )
-				$default_options[ $p . '_count_paged' ] = $current_options[ $p . '_count_paged' ];
-			else
+			if ( isset( $current_options[ $p . '_count_paged' ] ) ) {
+				$default_options[ $p . '_count_paged' ] = absint( $current_options[ $p . '_count_paged' ] );
+			} else {
 				$default_options[ $p . '_count_paged' ] = 0;
+			}
 		}
 		update_option( 'cpppc_options', $default_options );
 	}
@@ -174,8 +178,9 @@ class Custom_Posts_Per_Page_Foghlaim {
 	public function add_plugin_action_links( $links, $file ) {
 		static $this_plugin;
 
-		if ( ! $this_plugin )
+		if ( ! $this_plugin ) {
 			$this_plugin = plugin_basename( __FILE__ );
+		}
 
 		if ( $file == $this_plugin ) {
 			$settings_link = '<a href="' . site_url( '/wp-admin/options-general.php?page=post-count-settings' ) . '">' . __('Settings', 'custom-posts-per-page') . '</a>';
@@ -293,19 +298,21 @@ class Custom_Posts_Per_Page_Foghlaim {
 			 *  to us when our plugin is registered. If a custom post type becomes
 			 *  available after our plugin is installed, we'll want to catch it and
 			 *  assign a good value. */
-			if ( empty( $cpppc_options[ $p . '_count' ] ) )
+			if ( empty( $cpppc_options[ $p . '_count' ] ) ) {
 				$cpppc_options[ $p . '_count' ] = 0;
+			}
 
-			if ( empty( $cpppc_options[ $p . '_count_paged' ] ) )
+			if ( empty( $cpppc_options[ $p . '_count_paged' ] ) ) {
 				$cpppc_options[ $p . '_count_paged' ] = 0;
+			}
 
 			$this_post_data = get_post_type_object( $p );
 
 			?>
 			<tr>
 				<td><?php echo $this_post_data->labels->name; ?></td>
-				<td><input id="cpppc_post_type_count[<?php echo $p; ?>]" name="cpppc_options[<?php echo $p; ?>_count]" size="10" type="text" value="<?php echo esc_attr( $cpppc_options[ $p . '_count' ] ); ?>" />
-					&nbsp;<input id="cpppc_post_type_count[<?php echo $p; ?>]" name="cpppc_options[<?php echo $p; ?>_count_paged]" size="10" type="text" value="<?php echo esc_attr( $cpppc_options[ $p . '_count_paged' ] ); ?>" />
+				<td><input id="cpppc_post_type_count[<?php echo esc_attr( $p ); ?>]" name="cpppc_options[<?php echo esc_attr( $p ); ?>_count]" size="10" type="text" value="<?php echo esc_attr( $cpppc_options[ $p . '_count' ] ); ?>" />
+					&nbsp;<input id="cpppc_post_type_count[<?php echo esc_attr( $p ); ?>]" name="cpppc_options[<?php echo esc_attr( $p ); ?>_count_paged]" size="10" type="text" value="<?php echo esc_attr( $cpppc_options[ $p . '_count_paged' ] ); ?>" />
 				</td>
 			</tr>
 			<?php
@@ -423,8 +430,9 @@ class Custom_Posts_Per_Page_Foghlaim {
 	public function modify_query( $query ) {
 
 		/*  If this isn't the main query, we'll avoid altering the results. */
-		if ( ! $this->check_main_query( $query ) || is_admin() )
+		if ( ! $this->check_main_query( $query ) || is_admin() ) {
 			return;
+		}
 
 		$cpppc_options   = get_option( 'cpppc_options' );
 		$all_post_types  = get_post_types( array( '_builtin' => false ) );
@@ -458,12 +466,11 @@ class Custom_Posts_Per_Page_Foghlaim {
 		}
 
 		if ( isset( $this->final_options['posts'] ) ) {
-			$query->set( 'posts_per_page', $this->final_options['posts'] );
-			$query->set( 'offset', $this->final_options['offset'] );
+			$query->set( 'posts_per_page', absint( $this->final_options['posts'] ) );
+			$query->set( 'offset', absint( $this->final_options['offset'] ) );
 		}
 
 		add_filter( 'found_posts', array( $this, 'correct_found_posts' ) );
-
 	}
 
 	/**
@@ -480,22 +487,26 @@ class Custom_Posts_Per_Page_Foghlaim {
 	 */
 	public function correct_found_posts( $found_posts ) {
 
-		if ( empty( $this->final_options['set_count'] ) || empty( $this->final_options['set_count_paged'] ) )
+		if ( empty( $this->final_options['set_count'] ) || empty( $this->final_options['set_count_paged'] ) ) {
 			return $found_posts;
+		}
 
 		// We don't have the same issues if our first page and paged counts are the same as the math is easy then
-		if ( $this->final_options['set_count'] === $this->final_options['set_count_paged'] )
+		if ( $this->final_options['set_count'] === $this->final_options['set_count_paged'] ) {
 			return $found_posts;
+		}
 
 		// Do the true calculation for pages required based on both
 		// values: page 1 posts count and subsequent page post counts
 		$pages_required = ( ( ( $found_posts - $this->final_options['set_count'] ) / $this->final_options['set_count_paged'] ) + 1 );
 
-		if ( 0 === $this->page_number )
+		if ( 0 === $this->page_number ) {
 			return $pages_required * $this->final_options['set_count'];
+		}
 
-		if ( 1 < $this->page_number )
+		if ( 1 < $this->page_number ) {
 			return $pages_required * $this->final_options['set_count_paged'];
+		}
 
 		return $found_posts;
 	}
