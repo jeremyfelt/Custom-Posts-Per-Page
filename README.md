@@ -2,7 +2,7 @@ Custom Posts Per Page
 ====================
 
 * Contributors: jeremyfelt
-* Donate link: http://jeremyfelt.com/wordpress/plugins/custom-posts-per-page/
+* Donate link: https://jeremyfelt.com/wordpress/plugins/custom-posts-per-page/
 * Tags: admin, administration, settings, archives, posts-per-page, paged, posts, count, number, custom-post-type
 * Requires at least: 4.0
 * Tested up to: 4.1
