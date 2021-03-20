@@ -134,11 +134,19 @@ function output_post_type_count_text() {
 
 		$this_post_data = get_post_type_object( $post_type );
 
+		/* translators: 1: custom post type archive name. */
+		$single_label = sprintf( __( 'Posts per page value for first page of the %s archive view.', 'custom-posts-per-page' ), $this_post_data->labels->name );
+
+		/* translators: 1: custom post type archive name. */
+		$more_label   = sprintf( __( 'Posts per page value for subsequent pages of the %s archive view.', 'custom-posts-per-page' ), $this_post_data->labels->name );
 		?>
 		<tr>
 			<th scope="row"><?php echo $this_post_data->labels->name; ?></th>
-			<td><input id="cpppc_post_type_count[<?php echo esc_attr( $post_type ); ?>]" name="cpppc_options[<?php echo esc_attr( $post_type ); ?>_count]" size="10" type="text" value="<?php echo esc_attr( $cpppc_options[ $post_type . '_count' ] ); ?>" />
-				&nbsp;<input id="cpppc_post_type_count[<?php echo esc_attr( $post_type ); ?>]" name="cpppc_options[<?php echo esc_attr( $post_type ); ?>_count_paged]" size="10" type="text" value="<?php echo esc_attr( $cpppc_options[ $post_type . '_count_paged' ] ); ?>" />
+			<td>
+				<label for="cpppc_post_type_count[<?php echo esc_attr( $post_type ); ?>]" class="screen-reader-text" ><?php echo esc_html( $single_label ); ?></label>
+				<input id="cpppc_post_type_count[<?php echo esc_attr( $post_type ); ?>]" name="cpppc_options[<?php echo esc_attr( $post_type ); ?>_count]" size="10" type="text" value="<?php echo esc_attr( $cpppc_options[ $post_type . '_count' ] ); ?>" />
+				<label for="cpppc_post_type_count[<?php echo esc_attr( $post_type ); ?>_count_paged]" class="screen-reader-text" ><?php echo esc_html( $more_label ); ?></label>
+				<input id="cpppc_post_type_count[<?php echo esc_attr( $post_type ); ?>_count_paged]" name="cpppc_options[<?php echo esc_attr( $post_type ); ?>_count_paged]" size="10" type="text" value="<?php echo esc_attr( $cpppc_options[ $post_type . '_count_paged' ] ); ?>" />
 			</td>
 		</tr>
 		<?php
@@ -160,8 +168,10 @@ function output_index_count_text() {
 	);
 
 	?>
+	<label for="cpppc_index_count[0]" class="screen-reader-text"><?php echo esc_html_e( 'Posts per page value for first page of the main index view.', 'custom-posts-per-page' ); ?></label>
 	<input id="cpppc_index_count[0]" name="cpppc_options[front_count]" size="10" type="text" value="<?php echo esc_attr( $cpppc_options['front_count'] ); ?>" />
-	&nbsp;<input id="cpppc_index_count[1]" name="cpppc_options[front_count_paged]" size="10" type="text" value="<?php echo esc_attr( $cpppc_options['front_count_paged'] ); ?>" />
+	<label for="cpppc_index_count[1]" class="screen-reader-text"><?php echo esc_html_e( 'Posts per page value for subsequent pages of the main index view.', 'custom-posts-per-page' ); ?></label>
+	<input id="cpppc_index_count[1]" name="cpppc_options[front_count_paged]" size="10" type="text" value="<?php echo esc_attr( $cpppc_options['front_count_paged'] ); ?>" />
 	<?php
 }
 
@@ -178,8 +188,10 @@ function output_category_count_text() {
 	);
 
 	?>
+	<label for="cppppc_category_count[0]" class="screen-reader-text"><?php echo esc_html_e( 'Posts per page value for first page of the category archive view.', 'custom-posts-per-page' ); ?></label>
 	<input id="cppppc_category_count[0]" name="cpppc_options[category_count]" size="10" type="text" value="<?php echo esc_attr( $cpppc_options['category_count'] ); ?>" />
-	&nbsp;<input id="cppppc_category_count[1]" name="cpppc_options[category_count_paged]" size="10" type="text" value="<?php echo esc_attr( $cpppc_options['category_count_paged'] ); ?>" />
+	<label for="cppppc_category_count[1]" class="screen-reader-text"><?php echo esc_html_e( 'Posts per page value for subsequent pages of the category archive view.', 'custom-posts-per-page' ); ?></label>
+	<input id="cppppc_category_count[1]" name="cpppc_options[category_count_paged]" size="10" type="text" value="<?php echo esc_attr( $cpppc_options['category_count_paged'] ); ?>" />
 	<?php
 }
 
@@ -196,8 +208,10 @@ function output_archive_count_text() {
 	);
 
 	?>
+	<label for="cppppc_archive_count[0]" class="screen-reader-text"><?php echo esc_html_e( 'Posts per page value for first page of a general archive view.', 'custom-posts-per-page' ); ?></label>
 	<input id="cppppc_archive_count[0]" name="cpppc_options[archive_count]" size="10" type="text" value="<?php echo esc_attr( $cpppc_options['archive_count'] ); ?>" />
-	&nbsp;<input id="cppppc_archive_count[1]" name="cpppc_options[archive_count_paged]" size="10" type="text" value="<?php echo esc_attr( $cpppc_options['archive_count_paged'] ); ?>" />
+	<label for="cppppc_archive_count[1]" class="screen-reader-text"><?php echo esc_html_e( 'Posts per page value for subsequent pages of a general archive view.', 'custom-posts-per-page' ); ?></label>
+	<input id="cppppc_archive_count[1]" name="cpppc_options[archive_count_paged]" size="10" type="text" value="<?php echo esc_attr( $cpppc_options['archive_count_paged'] ); ?>" />
 	<?php
 }
 
@@ -214,8 +228,10 @@ function output_tag_count_text() {
 	);
 
 	?>
+	<label for="cpppc_tag_count[0]" class="screen-reader-text"><?php echo esc_html_e( 'Posts per page value for first page of the tag archive view.', 'custom-posts-per-page' ); ?></label>
 	<input id="cpppc_tag_count[0]" name="cpppc_options[tag_count]" size="10" type="text" value="<?php echo esc_attr( $cpppc_options['tag_count'] ); ?>" />
-	&nbsp;<input id="cpppc_tag_count[1]" name="cpppc_options[tag_count_paged]" size="10" type="text" value="<?php echo esc_attr( $cpppc_options['tag_count_paged'] ); ?>" />
+	<label for="cpppc_tag_count[1]" class="screen-reader-text"><?php echo esc_html_e( 'Posts per page value for subsequent pages of the tag archive view.', 'custom-posts-per-page' ); ?></label>
+	<input id="cpppc_tag_count[1]" name="cpppc_options[tag_count_paged]" size="10" type="text" value="<?php echo esc_attr( $cpppc_options['tag_count_paged'] ); ?>" />
 	<?php
 }
 
@@ -232,8 +248,10 @@ function output_author_count_text() {
 	);
 
 	?>
+	<label for="cpppc_author_count[0]" class="screen-reader-text"><?php echo esc_html_e( 'Posts per page value for first page of the author archive view.', 'custom-posts-per-page' ); ?></label>
 	<input id="cpppc_author_count[0]" name="cpppc_options[author_count]" size="10" type="text" value="<?php echo esc_attr( $cpppc_options['author_count'] ); ?>" />
-	&nbsp;<input id="cpppc_author_count[1]" name="cpppc_options[author_count_paged]" size="10" type="text" value="<?php echo esc_attr( $cpppc_options['author_count_paged'] ); ?>" />
+	<label for="cpppc_author_count[1]" class="screen-reader-text"><?php echo esc_html_e( 'Posts per page value for subsequent pages of the author archive view.', 'custom-posts-per-page' ); ?></label>
+	<input id="cpppc_author_count[1]" name="cpppc_options[author_count_paged]" size="10" type="text" value="<?php echo esc_attr( $cpppc_options['author_count_paged'] ); ?>" />
 	<?php
 }
 
@@ -250,8 +268,10 @@ function output_search_count_text() {
 	);
 
 	?>
+	<label for="cppppc_search_count[0]" class="screen-reader-text"><?php echo esc_html_e( 'Posts per page value for first page of the search archive view.', 'custom-posts-per-page' ); ?></label>
 	<input id="cppppc_search_count[0]" name="cpppc_options[search_count]" size="10" type="text" value="<?php echo esc_attr( $cpppc_options['search_count'] ); ?>" />
-	&nbsp;<input id="cppppc_search_count[1]" name="cpppc_options[search_count_paged]" size="10" type="text" value="<?php echo esc_attr( $cpppc_options['search_count_paged'] ); ?>" />
+	<label for="cppppc_search_count[1]" class="screen-reader-text"><?php echo esc_html_e( 'Posts per page value for subsequent pages of the search archive view.', 'custom-posts-per-page' ); ?></label>
+	<input id="cppppc_search_count[1]" name="cpppc_options[search_count_paged]" size="10" type="text" value="<?php echo esc_attr( $cpppc_options['search_count_paged'] ); ?>" />
 	<?php
 }
 
@@ -268,7 +288,9 @@ function output_default_count_text() {
 	);
 
 	?>
+	<label for="cppppc_default_count[0]" class="screen-reader-text"><?php echo esc_html_e( 'Default posts per page override value for the first page of archive views.', 'custom-posts-per-page' ); ?></label>
 	<input id="cppppc_default_count[0]" name="cpppc_options[default_count]" size="10" type="text" value="<?php echo esc_attr( $cpppc_options['default_count'] ); ?>" />
-	&nbsp;<input id="cppppc_default_count[1]" name="cpppc_options[default_count_paged]" size="10" type="text" value="<?php echo esc_attr( $cpppc_options['default_count_paged'] ); ?>" />
+	<label for="cppppc_default_count[1]" class="screen-reader-text"><?php echo esc_html_e( 'Default posts per page override value for subsequent pages of archive views.', 'custom-posts-per-page' ); ?></label>
+	<input id="cppppc_default_count[1]" name="cpppc_options[default_count_paged]" size="10" type="text" value="<?php echo esc_attr( $cpppc_options['default_count_paged'] ); ?>" />
 	<?php
 }

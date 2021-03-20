@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2021-03-20T23:19:52+00:00\n"
+"POT-Creation-Date: 2021-03-20T23:45:22+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.4.0\n"
 "X-Domain: custom-posts-per-page\n"
@@ -103,14 +103,80 @@ msgstr ""
 msgid "Default posts per page:"
 msgstr ""
 
-#: includes/settings.php:97
+#: includes/settings.php:95
 msgid "Main Settings"
 msgstr ""
 
-#: includes/settings.php:98
+#: includes/settings.php:96
 msgid "This section allows you to modify page view types associated with WordPress by default."
 msgstr ""
 
-#: includes/settings.php:107
+#: includes/settings.php:105
 msgid "Custom Post Type Specific Settings"
+msgstr ""
+
+#. translators: 1: custom post type archive name.
+#: includes/settings.php:138
+msgid "Posts per page value for first page of the %s archive view."
+msgstr ""
+
+#. translators: 1: custom post type archive name.
+#: includes/settings.php:141
+msgid "Posts per page value for subsequent pages of the %s archive view."
+msgstr ""
+
+#: includes/settings.php:171
+msgid "Posts per page value for first page of the main index view."
+msgstr ""
+
+#: includes/settings.php:173
+msgid "Posts per page value for subsequent pages of the main index view."
+msgstr ""
+
+#: includes/settings.php:191
+msgid "Posts per page value for first page of the category archive view."
+msgstr ""
+
+#: includes/settings.php:193
+msgid "Posts per page value for subsequent pages of the category archive view."
+msgstr ""
+
+#: includes/settings.php:211
+msgid "Posts per page value for first page of a general archive view."
+msgstr ""
+
+#: includes/settings.php:213
+msgid "Posts per page value for subsequent pages of a general archive view."
+msgstr ""
+
+#: includes/settings.php:231
+msgid "Posts per page value for first page of the tag archive view."
+msgstr ""
+
+#: includes/settings.php:233
+msgid "Posts per page value for subsequent pages of the tag archive view."
+msgstr ""
+
+#: includes/settings.php:251
+msgid "Posts per page value for first page of the author archive view."
+msgstr ""
+
+#: includes/settings.php:253
+msgid "Posts per page value for subsequent pages of the author archive view."
+msgstr ""
+
+#: includes/settings.php:271
+msgid "Posts per page value for first page of the search archive view."
+msgstr ""
+
+#: includes/settings.php:273
+msgid "Posts per page value for subsequent pages of the search archive view."
+msgstr ""
+
+#: includes/settings.php:291
+msgid "Default posts per page override value for the first page of archive views."
+msgstr ""
+
+#: includes/settings.php:293
+msgid "Default posts per page override value for subsequent pages of archive views."
 msgstr ""
