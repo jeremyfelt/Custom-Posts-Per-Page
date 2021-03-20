@@ -24,8 +24,8 @@ function add_settings() {
 function view_settings() {
 	?>
 	<div class="wrap">
-		<h2><?php esc_html_e( 'Custom Posts Per Page', 'custom-posts-per-page' ); ?></h2>
-		<h3><?php esc_html_e( 'Overview', 'custom-posts-per-page' ); ?></h3>
+		<h1><?php esc_html_e( 'Custom Posts Per Page', 'custom-posts-per-page' ); ?></h1>
+		<h2><?php esc_html_e( 'Overview', 'custom-posts-per-page' ); ?></h2>
 		<p style="margin-left:12px;max-width:640px;"><?php esc_html_e( 'The settings below allow you to specify how many posts per page are displayed to readers depending on the which type of page is being viewed.' ); ?></p>
 		<p style="margin-left:12px;max-width:640px;">
 		<?php
@@ -89,7 +89,7 @@ function validate_options( $input ) {
  */
 function output_main_section_text() {
 	?>
-	<h3><?php esc_html_e( 'Main Settings', 'custom-posts-per-page' ); ?></h3>
+	<h2><?php esc_html_e( 'Main Settings', 'custom-posts-per-page' ); ?></h2>
 	<p style="max-width:640px;margin-left:12px;">
 	<?php
 	esc_html_e(
@@ -120,7 +120,7 @@ function output_main_section_text() {
  */
 function output_custom_section_text() {
 	?>
-	<h3><?php esc_html_e( 'Custom Post Type Specific Settings', 'custom-posts-per-page' ); ?></h3>
+	<h2><?php esc_html_e( 'Custom Post Type Specific Settings', 'custom-posts-per-page' ); ?></h2>
 	<p style="max-width:640px;margin-left:12px;">
 		<?php
 		_e(
