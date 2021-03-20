@@ -24,7 +24,6 @@ function add_settings() {
 function view_settings() {
 	?>
 	<div class="wrap">
-		<div class="icon32" id="icon-options-general"></div>
 		<h2><?php esc_html_e( 'Custom Posts Per Page', 'custom-posts-per-page' ); ?></h2>
 		<h3><?php esc_html_e( 'Overview', 'custom-posts-per-page' ); ?></h3>
 		<p style="margin-left:12px;max-width:640px;"><?php esc_html_e( 'The settings below allow you to specify how many posts per page are displayed to readers depending on the which type of page is being viewed.' ); ?></p>
