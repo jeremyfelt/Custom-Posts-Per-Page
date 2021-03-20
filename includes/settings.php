@@ -71,8 +71,6 @@ function register_settings() {
 	add_settings_field( 'cpppc_author_count', __( 'Author posts per page:', 'custom-posts-per-page' ), __NAMESPACE__ . '\output_author_count_text', 'cpppc', 'cpppc_section_main' );
 	add_settings_field( 'cpppc_search_count', __( 'Search posts per page:', 'custom-posts-per-page' ), __NAMESPACE__ . '\output_search_count_text', 'cpppc', 'cpppc_section_main' );
 	add_settings_field( 'cpppc_default_count', __( 'Default posts per page:', 'custom-posts-per-page' ), __NAMESPACE__ . '\output_default_count_text', 'cpppc', 'cpppc_section_main' );
-
-	add_settings_field( 'cpppc_post_type_count', '', __NAMESPACE__ . '\output_post_type_count_text', 'cpppc_custom', 'cpppc_section_custom' );
 }
 
 /**
@@ -107,6 +105,8 @@ function output_custom_section_text() {
 	<h2><?php esc_html_e( 'Custom Post Type Specific Settings', 'custom-posts-per-page' ); ?></h2>
 	<p><?php esc_html_e( 'This section contains a list of all of your publicly registered custom post types.', 'custom-post-per-page' ); ?></p>
 	<?php
+
+	output_post_type_count_text();
 }
 
 /**
@@ -117,7 +117,7 @@ function output_post_type_count_text() {
 	$all_post_types = \CustomPostsPerPage\Main\get_supported_post_types();
 
 	/* Quirky little workaround for displaying the settings in our table */
-	echo '</td><td></td></tr>';
+	echo '<table class="form-table" role="presentation"><tbody>';
 
 	foreach ( $all_post_types as $post_type ) {
 		/*	Default values are assigned for custom post types that are available
@@ -136,13 +136,15 @@ function output_post_type_count_text() {
 
 		?>
 		<tr>
-			<td><?php echo $this_post_data->labels->name; ?></td>
+			<th scope="row"><?php echo $this_post_data->labels->name; ?></th>
 			<td><input id="cpppc_post_type_count[<?php echo esc_attr( $post_type ); ?>]" name="cpppc_options[<?php echo esc_attr( $post_type ); ?>_count]" size="10" type="text" value="<?php echo esc_attr( $cpppc_options[ $post_type . '_count' ] ); ?>" />
 				&nbsp;<input id="cpppc_post_type_count[<?php echo esc_attr( $post_type ); ?>]" name="cpppc_options[<?php echo esc_attr( $post_type ); ?>_count_paged]" size="10" type="text" value="<?php echo esc_attr( $cpppc_options[ $post_type . '_count_paged' ] ); ?>" />
 			</td>
 		</tr>
 		<?php
 	}
+
+	echo '</tbody></table>';
 }
 
 /**
