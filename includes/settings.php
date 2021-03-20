@@ -26,18 +26,23 @@ function view_settings() {
 	<div class="wrap">
 		<h1><?php esc_html_e( 'Custom Posts Per Page', 'custom-posts-per-page' ); ?></h1>
 		<h2><?php esc_html_e( 'Overview', 'custom-posts-per-page' ); ?></h2>
-		<p style="margin-left:12px;max-width:640px;"><?php esc_html_e( 'The settings below allow you to specify how many posts per page are displayed to readers depending on the which type of page is being viewed.' ); ?></p>
-		<p style="margin-left:12px;max-width:640px;">
-		<?php
-		esc_html_e(
-			'Different values can be set for your your main view, category views, tag views, author views, archive views, search views, and
-			views for custom post types. For each of these views, a different setting is available for the first page and subsequent pages. In
-			addition to these, a default value is available that can be set for any other pages not covered by this.',
-			'custom-posts-per-page'
-		);
-		?>
+		<p><?php esc_html_e( 'The settings below allow you to specify how many posts per page are displayed to readers depending on the which type of page is being viewed.' ); ?></p>
+		<p><?php _e( 'The initial default value was pulled from the setting <em>Blog Pages show at most</em> found in the', 'custom-posts-per-page' ); ?> <a href="<?php echo site_url( '/wp-admin/options-reading.php' ); ?>" title="<?php esc_attr_e( 'Reading Settings', 'custom-posts-per-page' ); ?>"><?php esc_html_e( 'Reading Settings', 'custom-posts-per-page' ); ?></a></p>
+
+		<p>
+			<strong><?php esc_html_e( 'Please Note', 'custom-posts-per-page' ); ?>:</strong>
+			<em>
+			<?php
+			_e(
+				'For each setting, the box on the <strong>LEFT</strong> controls the the number of posts displayed on the first page of that view and
+				the box on the <strong>RIGHT</strong> controls the number of posts seen on pages 2, 3, 4, etc... of that view. When an option is set to
+				0, the plugin will not modify any page requests for that view and will instead allow default values to pass through.',
+				'custom-posts-per-page'
+			);
+			?>
+			</em>
 		</p>
-		<p style="margin-left:12px;max-width:640px;"><?php _e( 'The initial value used on activation was pulled from the setting <em>Blog Pages show at most</em> found in the', 'custom-posts-per-page' ); ?> <a href="<?php echo site_url( '/wp-admin/options-reading.php' ); ?>" title="Reading Settings"><?php esc_html_e( 'Reading Settings', 'custom-posts-per-page' ); ?></a></p>
+
 		<form method="post" action="options.php">
 			<?php
 				settings_fields( 'cpppc_options' );
@@ -90,28 +95,7 @@ function validate_options( $input ) {
 function output_main_section_text() {
 	?>
 	<h2><?php esc_html_e( 'Main Settings', 'custom-posts-per-page' ); ?></h2>
-	<p style="max-width:640px;margin-left:12px;">
-	<?php
-	esc_html_e(
-		'This section allows you to modify page view types that are
-	associated with WordPress by default. When an option is set to 0, it will not modify any page requests for
-	that view and will instead allow default values to pass through.',
-		'custom-posts-per-page'
-	);
-	?>
-	</p>
-	<p style="max-width:460px;margin-left:12px;">
-		<strong><?php esc_html_e( 'Please Note', 'custom-posts-per-page' ); ?>:</strong>
-		<em>
-		<?php
-		_e(
-			'For each setting, the box on the <strong>LEFT</strong> controls the the number of posts displayed on	the first page of that view while
-		the box on the <strong>RIGHT</strong> controls the number of posts seen on pages 2, 3, 4, etc... of that view.',
-			'custom-posts-per-page'
-		);
-		?>
-		</em>
-	</p>
+	<p><?php esc_html_e( 'This section allows you to modify page view types associated with WordPress by default.', 'custom-posts-per-page' ); ?></p>
 	<?php
 }
 
@@ -121,17 +105,7 @@ function output_main_section_text() {
 function output_custom_section_text() {
 	?>
 	<h2><?php esc_html_e( 'Custom Post Type Specific Settings', 'custom-posts-per-page' ); ?></h2>
-	<p style="max-width:640px;margin-left:12px;">
-		<?php
-		_e(
-			'This section contains a list of all of your registered custom post types. In order to not conflict with
-			other plugins or themes, these are set to 0 by default. When an option is set to 0, it will not modify
-			any page requests for that custom post type archive. For Custom Posts Per Page to control the number of posts
-			to display, these will need to be changed.',
-			'custom-post-per-page'
-		);
-		?>
-	</p>
+	<p><?php esc_html_e( 'This section contains a list of all of your publicly registered custom post types.', 'custom-post-per-page' ); ?></p>
 	<?php
 }
 

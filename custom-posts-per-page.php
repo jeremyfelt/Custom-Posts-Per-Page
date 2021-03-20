@@ -2,7 +2,7 @@
 /*
 Plugin Name: Custom Posts Per Page
 Plugin URI: https://github.com/jeremyfelt/Custom-Posts-Per-Page
-Description: Shows a custom set number of posts depending on the type of page being viewed.
+Description: Shows a custom number of posts depending on the type of page being viewed.
 Version: 2.0.0-beta
 Author: Jeremy Felt
 Author URI: https://jeremyfelt.com
