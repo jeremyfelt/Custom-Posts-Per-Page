@@ -53,6 +53,11 @@ That's it! The current setting for *Blog pages show at most* under *Reading* wil
 
 ### 2.0.0
 
+* Refactor the plugin for the modern world. It's been 6 years!
+* Show only public post types in the custom post type list.
+* Improve accessibility of settings page.
+* Improve translation strings throughout; rely on translate.wordpress.org rather than submitted files.
+
 ### 1.7.1
 
 * Switch to semantic versioning. :)
