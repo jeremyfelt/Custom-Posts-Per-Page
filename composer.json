@@ -1,22 +1,23 @@
 {
-    "name": "jeremyfelt/custom-posts-per-page",
-    "description": "Customize how many posts are dispalyed for each front-end view.",
-    "type": "wordpress-plugin",
-    "license": "GPL-2.0-or-later",
-    "authors": [
-        {
-            "name": "jeremyfelt",
-            "email": "jeremy.felt@gmail.com"
-        }
-    ],
+	"name": "jeremyfelt/custom-posts-per-page",
+	"description": "Customize how many posts are dispalyed for each front-end view.",
+	"type": "wordpress-plugin",
+	"license": "GPL-2.0-or-later",
+	"authors": [
+		{
+			"name": "jeremyfelt",
+			"email": "jeremy.felt@gmail.com"
+		}
+	],
 	"extra": {
 		"wordpress-install-dir": "tests/wordpress"
 	},
-    "require-dev": {
+	"require-dev": {
 		"phpunit/phpunit": "^5 || ^7",
-        "wp-phpunit/wp-phpunit": "*",
-        "roots/wordpress": "*"
-    },
+		"roots/wordpress": "*",
+		"wp-cli/db-command": "^2",
+		"wp-phpunit/wp-phpunit": "*"
+	},
 	"scripts": {
 		"test": [
 			"wp db reset --yes --path=tests/wordpress #",
