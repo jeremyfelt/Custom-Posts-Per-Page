@@ -22,26 +22,20 @@ function add_settings() {
  * Display the main settings view for the plugin.
  */
 function view_settings() {
+	$default_string = sprintf(
+		/* translators: 1: An anchor link to the Reading Settings page in WordPress. */
+		__( 'The initial default value was pulled from the setting "Blog Pages show at most" found in the %s' ),
+		'<a href="' . site_url( '/wp-admin/options-reading.php' ) . '">' . __( 'Reading Settings' ) . '</a>'
+	);
 	?>
 	<div class="wrap">
 		<h1><?php esc_html_e( 'Custom Posts Per Page', 'custom-posts-per-page' ); ?></h1>
 		<h2><?php esc_html_e( 'Overview', 'custom-posts-per-page' ); ?></h2>
 		<p><?php esc_html_e( 'The settings below allow you to specify how many posts per page are displayed to readers depending on the which type of page is being viewed.' ); ?></p>
-		<p><?php _e( 'The initial default value was pulled from the setting <em>Blog Pages show at most</em> found in the', 'custom-posts-per-page' ); ?> <a href="<?php echo site_url( '/wp-admin/options-reading.php' ); ?>" title="<?php esc_attr_e( 'Reading Settings', 'custom-posts-per-page' ); ?>"><?php esc_html_e( 'Reading Settings', 'custom-posts-per-page' ); ?></a></p>
+		<p><?php echo wp_kses_post( $default_string ); ?></p>
 
-		<p>
-			<strong><?php esc_html_e( 'Please Note', 'custom-posts-per-page' ); ?>:</strong>
-			<em>
-			<?php
-			_e(
-				'For each setting, the box on the <strong>LEFT</strong> controls the the number of posts displayed on the first page of that view and
-				the box on the <strong>RIGHT</strong> controls the number of posts seen on pages 2, 3, 4, etc... of that view. When an option is set to
-				0, the plugin will not modify any page requests for that view and will instead allow default values to pass through.',
-				'custom-posts-per-page'
-			);
-			?>
-			</em>
-		</p>
+		<p><?php esc_html_e( 'Each box on the LEFT controls the the posts per page count on the first page of that view. Each box on the right controls the count on subsequent pages of that view.', 'custom-posts-per-page' ); ?></p>
+		<p><?php esc_html_e( 'When an option is set to 0, the plugin will not modify any page requests for that view and will instead allow default values to pass through.', 'custom-posts-per-page' ); ?></p>
 
 		<form method="post" action="options.php">
 			<?php
@@ -49,7 +43,7 @@ function view_settings() {
 				do_settings_sections( 'cpppc' );
 				do_settings_sections( 'cpppc_custom' );
 			?>
-			<p class="submit"><input type="submit" class="button-primary" value="<?php esc_html_e( 'Save Changes', 'custom-posts-per-page' ); ?>" /></p>
+			<p class="submit"><input type="submit" class="button-primary" value="<?php esc_html_e( 'Save Changes' ); ?>" /></p>
 		</form>
 	</div>
 	<?php
@@ -138,10 +132,10 @@ function output_post_type_count_text() {
 		$single_label = sprintf( __( 'Posts per page value for first page of the %s archive view.', 'custom-posts-per-page' ), $this_post_data->labels->name );
 
 		/* translators: 1: custom post type archive name. */
-		$more_label   = sprintf( __( 'Posts per page value for subsequent pages of the %s archive view.', 'custom-posts-per-page' ), $this_post_data->labels->name );
+		$more_label = sprintf( __( 'Posts per page value for subsequent pages of the %s archive view.', 'custom-posts-per-page' ), $this_post_data->labels->name );
 		?>
 		<tr>
-			<th scope="row"><?php echo $this_post_data->labels->name; ?></th>
+			<th scope="row"><?php echo esc_html( $this_post_data->labels->name ); ?></th>
 			<td>
 				<label for="cpppc_post_type_count[<?php echo esc_attr( $post_type ); ?>]" class="screen-reader-text" ><?php echo esc_html( $single_label ); ?></label>
 				<input id="cpppc_post_type_count[<?php echo esc_attr( $post_type ); ?>]" name="cpppc_options[<?php echo esc_attr( $post_type ); ?>_count]" size="10" type="text" value="<?php echo esc_attr( $cpppc_options[ $post_type . '_count' ] ); ?>" />
