@@ -50,5 +50,5 @@ jobs:
     - name: Run unit tests
       run: composer test
       env:
-        MYSQL_DATABASE: wordpress
-        WP_TESTS_DB_PASS: root
+        WP_TESTS_DB_USER: root
+        WP_TESTS_DB_PASS: ''
