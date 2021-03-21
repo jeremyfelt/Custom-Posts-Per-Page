@@ -18,6 +18,10 @@
         "roots/wordpress": "*"
     },
 	"scripts": {
-		"test": "phpunit"
+		"test": [
+			"wp db reset --yes --path=tests/wordpress #",
+			"export WP_MULTISITE=0 && phpunit --verbose --colors=always --exclude-group=ms-required",
+			"export WP_MULTISITE=1 && phpunit --verbose --colors=always --exclude-group=ms-excluded"
+		]
 	}
 }
