@@ -45,13 +45,11 @@ jobs:
     - name: Install dependencies
       run: |
         sudo systemctl start mysql.service
-        mysql -u root --password="" -e "GRANT ALL PRIVILEGES ON ${WP_TESTS_DB_NAME}.* TO ${WP_TESTS_DB_USER} IDENTIFIED BY '${WP_TESTS_DB_PASS}';"
-        mysql -u root --password="" -e "CREATE DATABASE ${WP_TESTS_DB_NAME};"
         composer install --prefer-dist
         composer require --dev --update-with-dependencies --prefer-dist roots/wordpress="${{ matrix.wp }} || *" wp-phpunit/wp-phpunit="${{ matrix.wp }} || *"
     - name: Run unit tests
       run: composer test
       env:
         WP_TESTS_DB_NAME: wordpress_plugin_tests
-        WP_TESTS_DB_USER: wp
-        WP_TESTS_DB_PASS: wp
+        WP_TESTS_DB_USER: root
+        WP_TESTS_DB_PASS: root
