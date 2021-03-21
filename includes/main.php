@@ -13,7 +13,7 @@ add_filter( 'plugin_action_links', __NAMESPACE__ . '\add_plugin_action_links', 1
  * @return array A list of post type slugs.
  */
 function get_supported_post_types() {
-	$post_types  = \get_post_types(
+	$post_types = \get_post_types(
 		array(
 			'_builtin' => false,
 		)
