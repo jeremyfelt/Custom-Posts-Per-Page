@@ -100,23 +100,15 @@ function activate() {
 /**
  * Adds a pretty 'settings' link under the plugin upon activation.
  *
- * This function gratefully taken (and barely modified) from Pippin Williamson's
- * WPMods article: http://www.wpmods.com/adding-plugin-action-links/
- *
  * @param $links array of links provided by core that will be displayed under the plugin
  * @param $file string representing the plugin's filename
  * @return array the new array of links to be displayed
  */
 function add_plugin_action_links( $links, $file ) {
-	static $this_plugin;
-
-	if ( ! $this_plugin ) {
-		$this_plugin = plugin_basename( __FILE__ );
-	}
-
-	if ( $file == $this_plugin ) {
-		$settings_link = '<a href="' . site_url( '/wp-admin/options-general.php?page=post-count-settings' ) . '">' . __( 'Settings', 'custom-posts-per-page' ) . '</a>';
+	if ( 'custom-posts-per-page/custom-posts-per-page.php' === $file ) {
+		$settings_link = '<a href="' . site_url( '/wp-admin/options-general.php?page=post-count-settings' ) . '">' . __( 'Settings' ) . '</a>';
 		array_unshift( $links, $settings_link );
 	}
+
 	return $links;
 }
