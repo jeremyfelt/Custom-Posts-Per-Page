@@ -16,6 +16,7 @@ function get_supported_post_types() {
 	$post_types = \get_post_types(
 		array(
 			'_builtin' => false,
+			'public'   => true,
 		)
 	);
 
